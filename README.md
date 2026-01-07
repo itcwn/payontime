@@ -4,9 +4,10 @@ To repozytorium zawiera gotowe strony HTML + moduły JavaScript (ESM) z podłąc
 
 ## Struktura
 
-- `public/*.html` — gotowe strony (landing, logowanie, rejestracja, dashboard, płatności, ustawienia).
-- `public/js/*.js` — moduły JavaScript (Supabase, logika harmonogramów, obsługa formularzy).
-- `public/css/styles.css` — główny arkusz stylów.
+
+- `/*.html` — gotowe strony (landing, logowanie, rejestracja, dashboard, płatności, ustawienia).
+- `/js/*.js` — moduły JavaScript (Supabase, logika harmonogramów, obsługa formularzy).
+- `/css/styles.css` — główny arkusz stylów.
 - `supabase/migrations/0001_init.sql` — migracja bazy danych z RLS.
 
 ## Konfiguracja Supabase
@@ -18,7 +19,8 @@ To repozytorium zawiera gotowe strony HTML + moduły JavaScript (ESM) z podłąc
 
 ## Konfiguracja frontendu
 
-1. Otwórz plik `public/js/config.js`.
+
+1. Otwórz plik `js/config.js`.
 2. Wpisz:
 
 ```
@@ -28,10 +30,8 @@ export const SUPABASE_ANON_KEY = "...";
 
 ## Uruchomienie lokalne
 
-Najprościej uruchomić statyczny serwer z katalogu `public`:
 
-```bash
-cd public
+Najprościej uruchomić statyczny serwer z katalogu głównego:
 python3 -m http.server 8080
 ```
 
