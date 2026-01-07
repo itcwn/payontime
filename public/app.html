@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZapłaćNaCzas - Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <header class="card" style="border-radius: 0; box-shadow: none;">
+      <div class="container page-header">
+        <a class="brand" href="/app.html">ZapłaćNaCzas</a>
+        <nav class="nav">
+          <a href="/app.html">Dashboard</a>
+          <a href="/payments-new.html">Nowa płatność</a>
+          <a href="/settings.html">Ustawienia</a>
+        </nav>
+      </div>
+    </header>
+    <main class="container stack">
+      <section class="hero">
+        <div class="page-header">
+          <div>
+            <h1>Twój dashboard</h1>
+            <p class="muted">Zalogowany jako <span id="user-email"></span></p>
+          </div>
+          <a class="button button-primary" href="/payments-new.html">Dodaj płatność</a>
+        </div>
+      </section>
+
+      <p id="error" class="error-text"></p>
+
+      <section class="card">
+        <div class="page-header">
+          <h2>Dzisiaj</h2>
+          <span class="muted" id="today-count">0</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Typ</th>
+                <th>Nazwa</th>
+                <th>Kwota</th>
+                <th>Następny termin</th>
+                <th>Adres dostawcy</th>
+                <th>Status</th>
+                <th>Akcje</th>
+              </tr>
+            </thead>
+            <tbody id="today-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="page-header">
+          <h2>Nadchodzące (7 dni)</h2>
+          <span class="muted" id="upcoming-count">0</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Typ</th>
+                <th>Nazwa</th>
+                <th>Kwota</th>
+                <th>Następny termin</th>
+                <th>Adres dostawcy</th>
+                <th>Status</th>
+                <th>Akcje</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="page-header">
+          <h2>Przeterminowane (30 dni)</h2>
+          <span class="muted" id="overdue-count">0</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Typ</th>
+                <th>Nazwa</th>
+                <th>Kwota</th>
+                <th>Następny termin</th>
+                <th>Adres dostawcy</th>
+                <th>Status</th>
+                <th>Akcje</th>
+              </tr>
+            </thead>
+            <tbody id="overdue-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="page-header">
+          <h2>Wszystkie</h2>
+          <span class="muted" id="all-count">0</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Typ</th>
+                <th>Nazwa</th>
+                <th>Kwota</th>
+                <th>Następny termin</th>
+                <th>Adres dostawcy</th>
+                <th>Status</th>
+                <th>Akcje</th>
+              </tr>
+            </thead>
+            <tbody id="all-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/js/dashboard.js"></script>
+  </body>
+</html>
