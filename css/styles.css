@@ -56,9 +56,23 @@ a {
 }
 
 .brand {
-  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
   font-weight: 700;
   color: var(--primary);
+}
+
+.brand img {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
+.brand-logo {
+  display: block;
+  height: 40px;
+  width: auto;
+  margin: 0 auto 12px;
 }
 
 .muted {
