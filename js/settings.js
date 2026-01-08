@@ -8,15 +8,20 @@ const logoutButton = document.getElementById("logout-button");
 const userEmail = document.getElementById("user-email");
 
 async function loadSettings() {
-  await requireSession();
-  const user = await getUser();
+  const session = await requireSession();
+  const user = session?.user ?? (await getUser());
   if (userEmail && user) {
     userEmail.textContent = user.email ?? "";
+  }
+
+  if (!session?.user) {
+    return;
   }
 
   const { data, error } = await supabase
     .from("user_settings")
     .select("*")
+    .eq("user_id", session.user.id)
     .single();
 
   if (error && error.code !== "PGRST116") {
@@ -35,8 +40,14 @@ form.addEventListener("submit", async (event) => {
   errorEl.textContent = "";
   successEl.textContent = "";
 
+  const session = await requireSession();
+  if (!session?.user) {
+    return;
+  }
+
   const formData = new FormData(form);
   const payload = {
+    user_id: session.user.id,
     email_enabled: formData.get("email_enabled") === "on",
     push_enabled: formData.get("push_enabled") === "on",
     timezone: "Europe/Warsaw"
