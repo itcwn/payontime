@@ -84,11 +84,18 @@ form.addEventListener("submit", async (event) => {
   };
 
   try {
-    await requireSession();
+    const session = await requireSession();
+    if (!session) {
+      return;
+    }
+    const payloadWithUser = {
+      ...payload,
+      user_id: session.user.id
+    };
     if (paymentId) {
       await updatePayment(paymentId, payload);
     } else {
-      await createPayment(payload);
+      await createPayment(payloadWithUser);
     }
     window.location.href = "/app.html";
   } catch (error) {
