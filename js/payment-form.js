@@ -74,7 +74,7 @@ form.addEventListener("submit", async (event) => {
     name: formData.get("name") || null,
     amount: formData.get("amount") ? Number(String(formData.get("amount")).replace(",", ".")) : null,
     currency: "PLN",
-    provider_address: formData.get("provider_address"),
+    provider_address: formData.get("provider_address") || null,
     schedule_mode: scheduleMode,
     due_date: scheduleMode === "one_time" ? formData.get("due_date") : null,
     day_of_month: scheduleMode === "monthly" && !isLastDay ? Number(formData.get("day_of_month")) : null,

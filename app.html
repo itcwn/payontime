@@ -34,93 +34,75 @@
 
       <section class="card">
         <div class="page-header">
-          <h2>Dzisiaj</h2>
-          <span class="muted" id="today-count">0</span>
+          <h2>Płatności</h2>
         </div>
-        <div style="overflow-x: auto;">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Typ</th>
-                <th>Nazwa</th>
-                <th>Kwota</th>
-                <th>Następny termin</th>
-                <th>Adres dostawcy</th>
-                <th>Status</th>
-                <th>Akcje</th>
-              </tr>
-            </thead>
-            <tbody id="today-body"></tbody>
-          </table>
+        <div class="tabs" role="tablist" aria-label="Zakładki płatności">
+          <button class="tab-button is-active" type="button" data-tab="seven" role="tab" aria-selected="true">
+            7 dni <span class="tab-count" id="seven-count">0</span>
+          </button>
+          <button class="tab-button" type="button" data-tab="thirty" role="tab" aria-selected="false">
+            30 dni <span class="tab-count" id="thirty-count">0</span>
+          </button>
+          <button class="tab-button" type="button" data-tab="all" role="tab" aria-selected="false">
+            Wszystkie <span class="tab-count" id="all-count">0</span>
+          </button>
         </div>
-      </section>
 
-      <section class="card">
-        <div class="page-header">
-          <h2>Nadchodzące (7 dni)</h2>
-          <span class="muted" id="upcoming-count">0</span>
+        <div class="tab-panel is-active" id="tab-seven" data-tab-panel="seven" role="tabpanel">
+          <div style="overflow-x: auto;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Typ</th>
+                  <th>Nazwa</th>
+                  <th>Kwota</th>
+                  <th>Następny termin</th>
+                  <th>Adres dostawcy</th>
+                  <th>Status</th>
+                  <th>Akcje</th>
+                </tr>
+              </thead>
+              <tbody id="seven-body"></tbody>
+            </table>
+          </div>
         </div>
-        <div style="overflow-x: auto;">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Typ</th>
-                <th>Nazwa</th>
-                <th>Kwota</th>
-                <th>Następny termin</th>
-                <th>Adres dostawcy</th>
-                <th>Status</th>
-                <th>Akcje</th>
-              </tr>
-            </thead>
-            <tbody id="upcoming-body"></tbody>
-          </table>
-        </div>
-      </section>
 
-      <section class="card">
-        <div class="page-header">
-          <h2>Przeterminowane (30 dni)</h2>
-          <span class="muted" id="overdue-count">0</span>
+        <div class="tab-panel" id="tab-thirty" data-tab-panel="thirty" role="tabpanel">
+          <div style="overflow-x: auto;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Typ</th>
+                  <th>Nazwa</th>
+                  <th>Kwota</th>
+                  <th>Następny termin</th>
+                  <th>Adres dostawcy</th>
+                  <th>Status</th>
+                  <th>Akcje</th>
+                </tr>
+              </thead>
+              <tbody id="thirty-body"></tbody>
+            </table>
+          </div>
         </div>
-        <div style="overflow-x: auto;">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Typ</th>
-                <th>Nazwa</th>
-                <th>Kwota</th>
-                <th>Następny termin</th>
-                <th>Adres dostawcy</th>
-                <th>Status</th>
-                <th>Akcje</th>
-              </tr>
-            </thead>
-            <tbody id="overdue-body"></tbody>
-          </table>
-        </div>
-      </section>
 
-      <section class="card">
-        <div class="page-header">
-          <h2>Wszystkie</h2>
-          <span class="muted" id="all-count">0</span>
-        </div>
-        <div style="overflow-x: auto;">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Typ</th>
-                <th>Nazwa</th>
-                <th>Kwota</th>
-                <th>Następny termin</th>
-                <th>Adres dostawcy</th>
-                <th>Status</th>
-                <th>Akcje</th>
-              </tr>
-            </thead>
-            <tbody id="all-body"></tbody>
-          </table>
+        <div class="tab-panel" id="tab-all" data-tab-panel="all" role="tabpanel">
+          <div style="overflow-x: auto;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Typ</th>
+                  <th>Nazwa</th>
+                  <th>Kwota</th>
+                  <th>Następny termin</th>
+                  <th>Adres dostawcy</th>
+                  <th>Status</th>
+                  <th>Akcje</th>
+                </tr>
+              </thead>
+              <tbody id="all-body"></tbody>
+            </table>
+          </div>
         </div>
       </section>
     </main>

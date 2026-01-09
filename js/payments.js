@@ -46,27 +46,40 @@ export function buildDashboardSections(payments) {
   const today = new Date();
   const todayString = formatDateString(today);
 
-  const todayItems = listDueItems(payments, today, today);
-  const upcomingItems = listDueItems(payments, addDays(today, 1), addDays(today, 7));
-  const overdueItems = listDueItems(payments, addDays(today, -30), addDays(today, -1));
-  const allItems = payments.map((payment) => {
-    const nextDue = computeNextDueDate(payment, today);
+  const sevenDaysItems = listDueItems(payments, today, addDays(today, 7));
+  const thirtyDaysItems = listDueItems(payments, today, addDays(today, 30));
+  const yearAhead = addDays(today, 365);
+  const allItems = [];
+
+  for (const payment of payments) {
+    if (payment.schedule_mode === "monthly" && payment.is_active) {
+      const plannedItems = listDueItems([payment], today, yearAhead);
+      plannedItems.forEach((item) => {
+        allItems.push({ ...item, isOverdue: false });
+      });
+      continue;
+    }
+
+    const dueDate =
+      payment.schedule_mode === "one_time"
+        ? payment.due_date ?? null
+        : computeNextDueDate(payment, today);
+
+    if (!dueDate) {
+      continue;
+    }
+
     const isOverdue =
       payment.schedule_mode === "one_time" &&
       payment.due_date &&
       payment.due_date < todayString;
 
-    return {
-      payment,
-      dueDate: nextDue ?? payment.due_date,
-      isOverdue
-    };
-  });
+    allItems.push({ payment, dueDate, isOverdue });
+  }
 
   return {
-    today: todayItems,
-    upcoming: upcomingItems,
-    overdue: overdueItems,
+    sevenDays: sevenDaysItems,
+    thirtyDays: thirtyDaysItems,
     all: allItems
   };
 }
@@ -82,7 +95,7 @@ export function renderTable(target, items) {
       <td>${item.dueDate ?? "Brak"}
         ${item.isOverdue ? '<span class="badge badge-danger">po terminie</span>' : ""}
       </td>
-      <td>${item.payment.provider_address}</td>
+      <td>${item.payment.provider_address || "—"}</td>
       <td>
         ${item.payment.is_active
           ? '<span class="badge badge-success">aktywna</span>'
