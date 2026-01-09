@@ -30,13 +30,14 @@
         <form id="payment-form" class="stack">
           <div class="form-grid">
             <label class="stack">
-              Typ płatności
+              Rodzaj płatności
               <select id="payment-type" name="payment_type" class="select"></select>
               <span class="help-text">Jeśli potrzebujesz własnego opisu, wpisz go w polu nazwy.</span>
             </label>
             <label class="stack">
-              Nazwa (opcjonalnie)
+              Opis płatności
               <input class="input" type="text" name="name" id="payment-name" />
+              <span class="help-text">Jeśli potrzebujesz własnego opisu, wpisz go w polu nazwy.</span>
             </label>
             <label class="stack">
               Kwota (opcjonalnie)
@@ -44,7 +45,8 @@
             </label>
             <label class="stack">
               Adres do systemu / dostawcy (opcjonalnie)
-              <input class="input" type="text" name="provider_address" id="provider-address" placeholder="https://... lub eBOK" />
+              <input class="input" type="text" name="provider_address" id="provider-address" placeholder="https://..." />
+              <span class="help-text">Jeśli potrzebujesz własnego opisu, wpisz go w polu nazwy.</span>
             </label>
           </div>
 
