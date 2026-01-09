@@ -90,7 +90,7 @@ export function renderTable(target, items) {
       </td>
       <td>
         <div class="table-actions">
-          <a class="link" href="/payments-edit.html?id=${item.payment.id}">Edytuj</a>
+          <a class="link" href="./payments-edit.html?id=${item.payment.id}">Edytuj</a>
           <button class="button button-secondary" data-toggle="${item.payment.id}" style="font-size:0.75rem;padding:6px 12px;">
             ${item.payment.is_active ? "Dezaktywuj" : "Aktywuj"}
           </button>

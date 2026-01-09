@@ -97,7 +97,7 @@ form.addEventListener("submit", async (event) => {
     } else {
       await createPayment(payloadWithUser);
     }
-    window.location.href = "/app.html";
+    window.location.href = "./app.html";
   } catch (error) {
     errorEl.textContent = error.message;
   }
