@@ -58,6 +58,48 @@
             <p><strong>Strefa czasowa</strong></p>
             <p class="help-text">Domyślnie: Europe/Warsaw</p>
           </div>
+          <div class="section">
+            <p><strong>Plan</strong></p>
+            <div class="stack">
+              <label class="row" style="align-items: flex-start; gap: 12px;">
+                <input type="radio" name="plan_tier" value="free" id="plan-free" checked />
+                <span>
+                  <strong>Darmowy</strong>
+                  <span class="muted" style="display: block;">Dodawanie do 5 płatności, przypomnienie email.</span>
+                </span>
+              </label>
+              <label class="row" style="align-items: flex-start; gap: 12px;">
+                <input type="radio" name="plan_tier" value="premium" id="plan-premium" />
+                <span>
+                  <strong>Premium</strong>
+                  <span class="muted" style="display: block;">
+                    Dodawanie bez ograniczeń, przypomnienia email, sumowanie opłat, SMS.
+                  </span>
+                </span>
+              </label>
+            </div>
+            <div class="card stack" style="margin-top: 16px;">
+              <div class="row" style="justify-content: space-between; align-items: center;">
+                <div>
+                  <p class="muted" style="margin-bottom: 4px;">Status planu premium</p>
+                  <p id="premium-status" style="margin: 0; font-weight: 600;">Nieaktywny</p>
+                  <p id="premium-expiry" class="muted" style="margin: 0;"></p>
+                </div>
+                <a
+                  id="premium-cta"
+                  class="button button-primary"
+                  href="https://www.przelewy24.pl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Aktywuj w Przelewy24 (7,99 zł / mc)
+                </a>
+              </div>
+              <p class="help-text" style="margin: 0;">
+                Rezygnacja z planu Premium powoduje przejście na Darmowy po zakończeniu opłaconego okresu.
+              </p>
+            </div>
+          </div>
           <p id="settings-error" class="error-text"></p>
           <p id="settings-success" class="muted"></p>
           <button type="submit" class="button button-primary">Zapisz ustawienia</button>
