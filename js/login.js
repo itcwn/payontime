@@ -17,5 +17,5 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
-  window.location.href = "/app.html";
+  window.location.href = "./app.html";
 });
