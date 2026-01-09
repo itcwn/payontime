@@ -103,25 +103,11 @@ export function renderTable(target, items) {
       </td>
       <td>
         <div class="table-actions">
-          <a class="link" href="./payments-edit.html?id=${item.payment.id}">Edytuj</a>
-          <button class="button button-secondary" data-toggle="${item.payment.id}" style="font-size:0.75rem;padding:6px 12px;">
-            ${item.payment.is_active ? "Dezaktywuj" : "Aktywuj"}
-          </button>
+          <a class="link" href="./payments-edit.html?id=${item.payment.id}" aria-label="Edytuj płatność">✏️</a>
         </div>
       </td>
     `;
     target.appendChild(row);
-  }
-}
-
-export async function togglePayment(id, isActive) {
-  const { error } = await supabase
-    .from("payments")
-    .update({ is_active: isActive })
-    .eq("id", id);
-
-  if (error) {
-    throw new Error(error.message);
   }
 }
 
