@@ -16,6 +16,7 @@ const intervalSelect = document.getElementById("interval-option");
 const customIntervalField = document.getElementById("custom-interval-field");
 const customIntervalInput = document.getElementById("custom-interval-months");
 const typeSelect = document.getElementById("payment-type");
+const isActiveInput = document.getElementById("is-active");
 
 let existingDayOfMonth = null;
 let existingIsLastDay = false;
@@ -62,6 +63,9 @@ async function loadPayment() {
   form.querySelector("#payment-name").value = payment.name ?? "";
   form.querySelector("#payment-amount").value = payment.amount ?? "";
   form.querySelector("#provider-address").value = payment.provider_address;
+  if (isActiveInput) {
+    isActiveInput.checked = payment.is_active ?? true;
+  }
   const scheduleValue = payment.schedule_mode === "monthly" ? "recurring" : payment.schedule_mode;
   form.querySelector(`input[name='schedule_mode'][value='${scheduleValue}']`).checked = true;
   form.querySelector("#due-date").value = payment.due_date ?? "";
@@ -97,6 +101,7 @@ form.addEventListener("submit", async (event) => {
       ? Number(formData.get("custom_interval_months"))
       : Number(selectedInterval);
   const recurringDayOfMonth = existingDayOfMonth ?? new Date().getDate();
+  const isActive = formData.get("is_active") === "on";
 
   const payload = {
     payment_type: formData.get("payment_type"),
@@ -110,7 +115,7 @@ form.addEventListener("submit", async (event) => {
     day_of_month: scheduleMode === "recurring" ? recurringDayOfMonth : null,
     is_last_day: scheduleMode === "recurring" ? existingIsLastDay : false,
     remind_offsets: remindOffsets.length ? remindOffsets : [-3, 0],
-    is_active: true
+    is_active: isActive
   };
 
   try {

@@ -2,8 +2,7 @@ import { requireSession, getUser, getUserLabel } from "./auth.js";
 import {
   buildDashboardSections,
   fetchPayments,
-  renderTable,
-  togglePayment
+  renderTable
 } from "./payments.js";
 
 const errorEl = document.getElementById("error");
@@ -117,19 +116,6 @@ async function loadDashboard() {
     thirtyCount.textContent = sections.thirtyDays.length;
     allCount.textContent = sections.all.length;
 
-    document.querySelectorAll("button[data-toggle]").forEach((button) => {
-      button.addEventListener("click", async () => {
-        const id = button.dataset.toggle;
-        const item = sections.all.find((entry) => entry.payment.id === id);
-        if (!item) return;
-        try {
-          await togglePayment(id, !item.payment.is_active);
-          await loadDashboard();
-        } catch (error) {
-          errorEl.textContent = error.message;
-        }
-      });
-    });
   } catch (error) {
     errorEl.textContent = error.message;
   }
