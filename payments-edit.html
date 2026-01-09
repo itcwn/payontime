@@ -56,23 +56,36 @@
                 Jednorazowa
               </label>
               <label class="row" style="align-items: center;">
-                <input type="radio" name="schedule_mode" value="monthly" />
-                Miesięczna
+                <input type="radio" name="schedule_mode" value="recurring" />
+                Cykliczna
               </label>
             </div>
             <div id="due-date-field" class="stack">
               Termin płatności
               <input class="input" type="date" name="due_date" id="due-date" />
             </div>
-            <div id="monthly-field" class="form-grid" style="display: none;">
+            <div id="recurring-field" class="stack" style="display: none;">
               <label class="stack">
-                Dzień miesiąca
-                <input class="input" type="number" name="day_of_month" id="day-of-month" min="1" max="31" />
+                Co ile powtarzać
+                <select id="interval-option" name="interval_option" class="select">
+                  <option value="1">1 miesiąc</option>
+                  <option value="2">2 miesiące</option>
+                  <option value="3">Kwartał</option>
+                  <option value="6">Pół roku</option>
+                  <option value="12">Rok</option>
+                  <option value="custom">Inny</option>
+                </select>
               </label>
-              <label class="row" style="align-items: center;">
-                <input type="checkbox" name="is_last_day" id="is-last-day" />
-                Ostatni dzień miesiąca
-              </label>
+              <div id="custom-interval-field" class="row" style="align-items: center; display: none;">
+                <span>Podaj liczbę miesięcy</span>
+                <input
+                  class="input input-compact"
+                  type="number"
+                  name="custom_interval_months"
+                  id="custom-interval-months"
+                  min="1"
+                />
+              </div>
             </div>
           </div>
 

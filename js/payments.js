@@ -52,7 +52,7 @@ export function buildDashboardSections(payments) {
   const allItems = [];
 
   for (const payment of payments) {
-    if (payment.schedule_mode === "monthly" && payment.is_active) {
+    if ((payment.schedule_mode === "monthly" || payment.schedule_mode === "recurring") && payment.is_active) {
       const plannedItems = listDueItems([payment], today, yearAhead);
       plannedItems.forEach((item) => {
         allItems.push({ ...item, isOverdue: false });
