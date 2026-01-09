@@ -32,6 +32,20 @@ function dateStringToNumber(dateString) {
   return Number(dateString.replaceAll("-", ""));
 }
 
+function addMonths(year, month, increment) {
+  const totalMonths = month + increment - 1;
+  const nextYear = year + Math.floor(totalMonths / 12);
+  const nextMonth = (totalMonths % 12) + 1;
+  return { year: nextYear, month: nextMonth };
+}
+
+function getIntervalMonths(payment) {
+  if (payment.schedule_mode === "monthly") {
+    return 1;
+  }
+  return payment.interval_months ?? 1;
+}
+
 export function computeNextDueDate(payment, fromDate = new Date(), timezone = defaultTimezone) {
   if (payment.schedule_mode === "one_time") {
     if (!payment.due_date) {
@@ -51,11 +65,13 @@ export function computeNextDueDate(payment, fromDate = new Date(), timezone = de
   const baseDay = payment.is_last_day
     ? monthLastDay
     : Math.min(payment.day_of_month ?? 1, monthLastDay);
+  const intervalMonths = getIntervalMonths(payment);
   const shouldMoveToNextMonth = day > baseDay;
-
-  const nextMonth = shouldMoveToNextMonth ? month + 1 : month;
-  const nextYear = nextMonth > 12 ? year + 1 : year;
-  const normalizedMonth = nextMonth > 12 ? 1 : nextMonth;
+  const { year: nextYear, month: normalizedMonth } = addMonths(
+    year,
+    month,
+    shouldMoveToNextMonth ? intervalMonths : 0
+  );
   const nextMonthLastDay = lastDayOfMonth(nextYear, normalizedMonth);
   const nextDay = payment.is_last_day
     ? nextMonthLastDay
@@ -95,6 +111,7 @@ export function listDueItems(payments, windowStart, windowEnd, timezone = defaul
 
     let year = startYear;
     let month = startMonth;
+    const intervalMonths = getIntervalMonths(payment);
 
     while (year < endYear || (year === endYear && month <= endMonth)) {
       const monthLastDay = lastDayOfMonth(year, month);
@@ -108,11 +125,9 @@ export function listDueItems(payments, windowStart, windowEnd, timezone = defaul
         results.push({ payment, dueDate });
       }
 
-      month += 1;
-      if (month > 12) {
-        month = 1;
-        year += 1;
-      }
+      const next = addMonths(year, month, intervalMonths);
+      year = next.year;
+      month = next.month;
     }
   }
 

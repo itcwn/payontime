@@ -254,6 +254,11 @@ a {
   font-size: 0.95rem;
 }
 
+.input-compact {
+  width: 3ch;
+  padding: 10px 8px;
+}
+
 .input:disabled {
   background: #f3f4f6;
 }
