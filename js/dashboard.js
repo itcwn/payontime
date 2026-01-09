@@ -1,4 +1,4 @@
-import { requireSession, getUser } from "./auth.js";
+import { requireSession, getUser, getUserLabel } from "./auth.js";
 import {
   buildDashboardSections,
   fetchPayments,
@@ -39,7 +39,7 @@ async function loadDashboard() {
   await requireSession();
   const user = await getUser();
   if (userEmail && user) {
-    userEmail.textContent = user.email ?? "";
+    userEmail.textContent = getUserLabel(user);
   }
 
   try {
