@@ -7,15 +7,33 @@ import {
 } from "./payments.js";
 
 const errorEl = document.getElementById("error");
-const todayBody = document.getElementById("today-body");
-const upcomingBody = document.getElementById("upcoming-body");
-const overdueBody = document.getElementById("overdue-body");
+const sevenBody = document.getElementById("seven-body");
+const thirtyBody = document.getElementById("thirty-body");
 const allBody = document.getElementById("all-body");
-const todayCount = document.getElementById("today-count");
-const upcomingCount = document.getElementById("upcoming-count");
-const overdueCount = document.getElementById("overdue-count");
+const sevenCount = document.getElementById("seven-count");
+const thirtyCount = document.getElementById("thirty-count");
 const allCount = document.getElementById("all-count");
 const userEmail = document.getElementById("user-email");
+const tabButtons = document.querySelectorAll(".tab-button");
+const tabPanels = document.querySelectorAll(".tab-panel");
+
+function setActiveTab(tabName) {
+  tabButtons.forEach((button) => {
+    const isActive = button.dataset.tab === tabName;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-selected", isActive ? "true" : "false");
+  });
+
+  tabPanels.forEach((panel) => {
+    panel.classList.toggle("is-active", panel.dataset.tabPanel === tabName);
+  });
+}
+
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    setActiveTab(button.dataset.tab);
+  });
+});
 
 async function loadDashboard() {
   await requireSession();
@@ -28,14 +46,12 @@ async function loadDashboard() {
     const payments = await fetchPayments();
     const sections = buildDashboardSections(payments);
 
-    renderTable(todayBody, sections.today);
-    renderTable(upcomingBody, sections.upcoming);
-    renderTable(overdueBody, sections.overdue);
+    renderTable(sevenBody, sections.sevenDays);
+    renderTable(thirtyBody, sections.thirtyDays);
     renderTable(allBody, sections.all);
 
-    todayCount.textContent = sections.today.length;
-    upcomingCount.textContent = sections.upcoming.length;
-    overdueCount.textContent = sections.overdue.length;
+    sevenCount.textContent = sections.sevenDays.length;
+    thirtyCount.textContent = sections.thirtyDays.length;
     allCount.textContent = sections.all.length;
 
     document.querySelectorAll("button[data-toggle]").forEach((button) => {
