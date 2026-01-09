@@ -24,3 +24,18 @@ export async function getUser() {
   } = await supabase.auth.getUser();
   return user;
 }
+
+export function getDisplayName(user) {
+  if (!user) return "";
+  const name =
+    user.user_metadata?.display_name ??
+    user.user_metadata?.displayName ??
+    user.display_name ??
+    "";
+  return typeof name === "string" ? name.trim() : "";
+}
+
+export function getUserLabel(user) {
+  const displayName = getDisplayName(user);
+  return displayName || user?.email || "";
+}

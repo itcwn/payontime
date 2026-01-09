@@ -1,17 +1,28 @@
 import { supabase } from "./supabase-client.js";
-import { requireSession, signOut, getUser } from "./auth.js";
+import {
+  requireSession,
+  signOut,
+  getUser,
+  getDisplayName,
+  getUserLabel
+} from "./auth.js";
 
 const form = document.getElementById("settings-form");
 const errorEl = document.getElementById("settings-error");
 const successEl = document.getElementById("settings-success");
 const logoutButton = document.getElementById("logout-button");
 const userEmail = document.getElementById("user-email");
+const displayNameInput = document.getElementById("display-name");
 
 async function loadSettings() {
   const session = await requireSession();
   const user = session?.user ?? (await getUser());
   if (userEmail && user) {
-    userEmail.textContent = user.email ?? "";
+    userEmail.textContent = getUserLabel(user);
+  }
+
+  if (displayNameInput && user) {
+    displayNameInput.value = getDisplayName(user);
   }
 
   if (!session?.user) {
@@ -46,12 +57,25 @@ form.addEventListener("submit", async (event) => {
   }
 
   const formData = new FormData(form);
+  const displayName = formData.get("display_name");
+  const trimmedDisplayName =
+    typeof displayName === "string" ? displayName.trim() : "";
   const payload = {
     user_id: session.user.id,
     email_enabled: formData.get("email_enabled") === "on",
     push_enabled: formData.get("push_enabled") === "on",
     timezone: "Europe/Warsaw"
   };
+
+  const { error: profileError } = await supabase.auth.updateUser({
+    data: {
+      display_name: trimmedDisplayName || null
+    }
+  });
+  if (profileError) {
+    errorEl.textContent = profileError.message;
+    return;
+  }
 
   const { error } = await supabase.from("user_settings").upsert(payload);
   if (error) {
