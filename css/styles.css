@@ -54,7 +54,7 @@ main {
 .page-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .nav {
@@ -337,6 +337,11 @@ main {
 .error-text {
   font-size: 0.8rem;
   color: #dc2626;
+}
+
+.error-text:empty {
+  height: 0;
+  margin: 0;
 }
 
 .section {
