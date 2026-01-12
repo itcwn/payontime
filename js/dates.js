@@ -32,6 +32,16 @@ function dateStringToNumber(dateString) {
   return Number(dateString.replaceAll("-", ""));
 }
 
+function buildUTCDate(year, month, day) {
+  return new Date(Date.UTC(year, month - 1, day));
+}
+
+function addDays(date, days) {
+  const next = new Date(date);
+  next.setUTCDate(next.getUTCDate() + days);
+  return next;
+}
+
 function addMonths(year, month, increment) {
   const totalMonths = month + increment - 1;
   const nextYear = year + Math.floor(totalMonths / 12);
@@ -39,11 +49,20 @@ function addMonths(year, month, increment) {
   return { year: nextYear, month: nextMonth };
 }
 
-function getIntervalMonths(payment) {
-  if (payment.schedule_mode === "monthly") {
-    return 1;
+function getIntervalConfig(payment) {
+  if (payment.interval_unit === "weeks") {
+    return { unit: "weeks", value: payment.interval_weeks ?? 1 };
   }
-  return payment.interval_months ?? 1;
+  if (payment.interval_unit === "months") {
+    return { unit: "months", value: payment.interval_months ?? 1 };
+  }
+  if (payment.schedule_mode === "monthly") {
+    return { unit: "months", value: 1 };
+  }
+  if (payment.interval_months) {
+    return { unit: "months", value: payment.interval_months };
+  }
+  return { unit: "months", value: 1 };
 }
 
 export function computeNextDueDate(payment, fromDate = new Date(), timezone = defaultTimezone) {
@@ -58,24 +77,31 @@ export function computeNextDueDate(payment, fromDate = new Date(), timezone = de
       : null;
   }
 
-  const { year, month, day } = parseDateString(
-    formatDateString(fromDate, timezone)
-  );
+  const { year, month, day } = parseDateString(formatDateString(fromDate, timezone));
+  const interval = getIntervalConfig(payment);
+  const baseDay = Math.min(payment.day_of_month ?? day, lastDayOfMonth(year, month));
+
+  if (interval.unit === "weeks") {
+    const todayString = formatDateString(fromDate, timezone);
+    let candidate = buildUTCDate(year, month, baseDay);
+    while (dateStringToNumber(formatDateString(candidate, timezone)) < dateStringToNumber(todayString)) {
+      candidate = addDays(candidate, interval.value * 7);
+    }
+    return formatDateString(candidate, timezone);
+  }
+
   const monthLastDay = lastDayOfMonth(year, month);
-  const baseDay = payment.is_last_day
-    ? monthLastDay
-    : Math.min(payment.day_of_month ?? 1, monthLastDay);
-  const intervalMonths = getIntervalMonths(payment);
-  const shouldMoveToNextMonth = day > baseDay;
+  const normalizedBaseDay = payment.is_last_day ? monthLastDay : Math.min(baseDay, monthLastDay);
+  const shouldMoveToNextMonth = day > normalizedBaseDay;
   const { year: nextYear, month: normalizedMonth } = addMonths(
     year,
     month,
-    shouldMoveToNextMonth ? intervalMonths : 0
+    shouldMoveToNextMonth ? interval.value : 0
   );
   const nextMonthLastDay = lastDayOfMonth(nextYear, normalizedMonth);
   const nextDay = payment.is_last_day
     ? nextMonthLastDay
-    : Math.min(payment.day_of_month ?? 1, nextMonthLastDay);
+    : Math.min(payment.day_of_month ?? normalizedBaseDay, nextMonthLastDay);
 
   return buildDateString(nextYear, normalizedMonth, nextDay);
 }
@@ -109,9 +135,25 @@ export function listDueItems(payments, windowStart, windowEnd, timezone = defaul
     );
     const { year: endYear, month: endMonth } = parseDateString(endDateString);
 
+    const interval = getIntervalConfig(payment);
+
+    if (interval.unit === "weeks") {
+      const monthLastDay = lastDayOfMonth(startYear, startMonth);
+      const baseDay = Math.min(payment.day_of_month ?? 1, monthLastDay);
+      let candidate = buildUTCDate(startYear, startMonth, baseDay);
+      while (dateStringToNumber(formatDateString(candidate, timezone)) < startNumber) {
+        candidate = addDays(candidate, interval.value * 7);
+      }
+
+      while (dateStringToNumber(formatDateString(candidate, timezone)) <= endNumber) {
+        results.push({ payment, dueDate: formatDateString(candidate, timezone) });
+        candidate = addDays(candidate, interval.value * 7);
+      }
+      continue;
+    }
+
     let year = startYear;
     let month = startMonth;
-    const intervalMonths = getIntervalMonths(payment);
 
     while (year < endYear || (year === endYear && month <= endMonth)) {
       const monthLastDay = lastDayOfMonth(year, month);
@@ -125,7 +167,7 @@ export function listDueItems(payments, windowStart, windowEnd, timezone = defaul
         results.push({ payment, dueDate });
       }
 
-      const next = addMonths(year, month, intervalMonths);
+      const next = addMonths(year, month, interval.value);
       year = next.year;
       month = next.month;
     }

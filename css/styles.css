@@ -283,6 +283,18 @@ main {
   letter-spacing: 0.08em;
 }
 
+.cycle-table th {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.85rem;
+  color: inherit;
+  width: 100%;
+}
+
+.cycle-table td {
+  width: 48px;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
