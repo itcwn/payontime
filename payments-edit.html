@@ -67,27 +67,40 @@
               <input class="input" type="date" name="due_date" id="due-date" />
             </div>
             <div id="recurring-field" class="stack" style="display: none;">
+              <p class="muted"><strong>Cykl rozliczeniowy</strong></p>
+              <table class="table cycle-table">
+                <tbody>
+                  <tr>
+                    <th scope="row">1 tydzień</th>
+                    <td><input type="radio" name="interval_option" value="1w" /></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2 tygodnie</th>
+                    <td><input type="radio" name="interval_option" value="2w" /></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Miesiąc</th>
+                    <td><input type="radio" name="interval_option" value="1m" checked /></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2 miesiące</th>
+                    <td><input type="radio" name="interval_option" value="2m" /></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Kwartał</th>
+                    <td><input type="radio" name="interval_option" value="3m" /></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Rok</th>
+                    <td><input type="radio" name="interval_option" value="12m" /></td>
+                  </tr>
+                </tbody>
+              </table>
               <label class="stack">
-                Co ile powtarzać
-                <select id="interval-option" name="interval_option" class="select">
-                  <option value="1">1 miesiąc</option>
-                  <option value="2">2 miesiące</option>
-                  <option value="3">Kwartał</option>
-                  <option value="6">Pół roku</option>
-                  <option value="12">Rok</option>
-                  <option value="custom">Inny</option>
-                </select>
+                Dzień miesiąca płatności
+                <input class="input input-compact" type="number" min="1" max="31" name="day_of_month" id="day-of-month" />
+                <span class="help-text">Jeśli miesiąc ma mniej dni, termin przesuwa się na ostatni dzień miesiąca.</span>
               </label>
-              <div id="custom-interval-field" class="row" style="align-items: center; display: none;">
-                <span>Podaj liczbę miesięcy</span>
-                <input
-                  class="input input-compact"
-                  type="number"
-                  name="custom_interval_months"
-                  id="custom-interval-months"
-                  min="1"
-                />
-              </div>
             </div>
           </div>
 
@@ -104,10 +117,13 @@
 
           <div class="section">
             <p><strong>Przypomnienia</strong></p>
-            <p class="help-text">Domyślnie wysyłamy 3 dni przed terminem i w dniu płatności.</p>
+            <p class="help-text">Wybierz, kiedy mamy wysyłać przypomnienia o terminie płatności.</p>
             <div class="row">
               <label class="row" style="align-items: center;">
-                <input type="checkbox" name="remind_offsets" value="-7" />7 dni przed
+                <input type="checkbox" name="remind_offsets" value="-14" />2 tygodnie przed
+              </label>
+              <label class="row" style="align-items: center;">
+                <input type="checkbox" name="remind_offsets" value="-7" />1 tydzień przed
               </label>
               <label class="row" style="align-items: center;">
                 <input type="checkbox" name="remind_offsets" value="-3" checked />3 dni przed
@@ -115,13 +131,8 @@
               <label class="row" style="align-items: center;">
                 <input type="checkbox" name="remind_offsets" value="-1" />1 dzień przed
               </label>
-              <label class="row" style="align-items: center;">
-                <input type="checkbox" name="remind_offsets" value="0" checked />Dzień terminu
-              </label>
-              <label class="row" style="align-items: center;">
-                <input type="checkbox" name="remind_offsets" value="1" />1 dzień po
-              </label>
             </div>
+            <p id="reminder-preview" class="help-text">Terminy najbliższych powiadomień: —</p>
           </div>
 
           <p id="form-error" class="error-text"></p>
