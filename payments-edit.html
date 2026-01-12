@@ -26,6 +26,17 @@
             <h1>Edytuj płatność</h1>
             <p class="muted">Zmień dane i harmonogram przypomnień.</p>
           </div>
+          <div class="page-header-actions">
+            <span class="muted">Aktywacja</span>
+            <label class="switch">
+              <input type="checkbox" name="is_active" id="is-active" form="payment-form" checked />
+              <span class="switch-track" aria-hidden="true"></span>
+              <span class="switch-text">Płatność aktywna</span>
+            </label>
+            <p class="help-text">
+              Domyślnie każda nowa płatność jest aktywna. Wyłączenie aktywności spowoduje, że nie pojawi się ona w powiadomieniach.
+            </p>
+          </div>
         </div>
         <form id="payment-form" class="stack">
           <div class="form-grid">
@@ -51,7 +62,7 @@
           </div>
 
           <div class="section">
-            <p><strong>Harmonogram</strong></p>
+            <p><strong>Termin płatności</strong></p>
             <div class="row">
               <label class="row" style="align-items: center;">
                 <input type="radio" name="schedule_mode" value="one_time" checked />
@@ -67,52 +78,23 @@
               <input class="input" type="date" name="due_date" id="due-date" />
             </div>
             <div id="recurring-field" class="stack" style="display: none;">
-              <p class="muted"><strong>Cykl rozliczeniowy</strong></p>
-              <table class="table cycle-table">
-                <tbody>
-                  <tr>
-                    <th scope="row">1 tydzień</th>
-                    <td><input type="radio" name="interval_option" value="1w" /></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2 tygodnie</th>
-                    <td><input type="radio" name="interval_option" value="2w" /></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Miesiąc</th>
-                    <td><input type="radio" name="interval_option" value="1m" checked /></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2 miesiące</th>
-                    <td><input type="radio" name="interval_option" value="2m" /></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Kwartał</th>
-                    <td><input type="radio" name="interval_option" value="3m" /></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Rok</th>
-                    <td><input type="radio" name="interval_option" value="12m" /></td>
-                  </tr>
-                </tbody>
-              </table>
               <label class="stack">
-                Dzień miesiąca płatności
+                Okres rozliczeniowy
+                <select id="interval-option" name="interval_option" class="select">
+                  <option value="1w">1 tydzień</option>
+                  <option value="2w">2 tygodnie</option>
+                  <option value="1m" selected>Miesiąc</option>
+                  <option value="2m">2 miesiące</option>
+                  <option value="3m">Kwartał</option>
+                  <option value="12m">Rok</option>
+                </select>
+              </label>
+              <label class="stack">
+                Dzień płatności w cyklu rozliczeniowym
                 <input class="input input-compact" type="number" min="1" max="31" name="day_of_month" id="day-of-month" />
                 <span class="help-text">Jeśli miesiąc ma mniej dni, termin przesuwa się na ostatni dzień miesiąca.</span>
               </label>
             </div>
-          </div>
-
-          <div class="section">
-            <p><strong>Aktywacja</strong></p>
-            <label class="row" style="align-items: center;">
-              <input type="checkbox" name="is_active" id="is-active" checked />
-              Płatność aktywna
-            </label>
-            <p class="help-text">
-              Domyślnie każda nowa płatność jest aktywna. Wyłączenie aktywności spowoduje, że nie pojawi się ona w powiadomieniach.
-            </p>
           </div>
 
           <div class="section">

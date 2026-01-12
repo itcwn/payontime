@@ -13,7 +13,7 @@ const errorEl = document.getElementById("form-error");
 const scheduleRadios = document.querySelectorAll("input[name='schedule_mode']");
 const dueDateField = document.getElementById("due-date-field");
 const recurringField = document.getElementById("recurring-field");
-const intervalOptions = document.querySelectorAll("input[name='interval_option']");
+const intervalSelect = document.getElementById("interval-option");
 const typeSelect = document.getElementById("payment-type");
 const isActiveInput = document.getElementById("is-active");
 const dayOfMonthInput = document.getElementById("day-of-month");
@@ -62,8 +62,7 @@ function parseIntervalOption(value) {
 }
 
 function getSelectedIntervalOption() {
-  const selected = Array.from(intervalOptions).find((option) => option.checked);
-  return selected?.value ?? "1m";
+  return intervalSelect?.value ?? "1m";
 }
 
 function buildReminderPreview() {
@@ -115,9 +114,9 @@ function buildReminderPreview() {
   reminderPreview.textContent = `Terminy najbliższych powiadomień: ${reminderDates.join(", ")}`;
 }
 
-intervalOptions.forEach((option) => {
-  option.addEventListener("change", buildReminderPreview);
-});
+if (intervalSelect) {
+  intervalSelect.addEventListener("change", buildReminderPreview);
+}
 
 if (dayOfMonthInput) {
   dayOfMonthInput.addEventListener("input", buildReminderPreview);
@@ -149,9 +148,8 @@ async function loadPayment() {
   const intervalWeeks = payment.interval_weeks ?? 1;
   const intervalValue =
     intervalUnit === "weeks" ? `${intervalWeeks}w` : `${intervalMonths}m`;
-  const intervalOption = Array.from(intervalOptions).find((option) => option.value === intervalValue);
-  if (intervalOption) {
-    intervalOption.checked = true;
+  if (intervalSelect) {
+    intervalSelect.value = intervalValue;
   }
   if (dayOfMonthInput) {
     dayOfMonthInput.value = existingDayOfMonth ?? (existingIsLastDay ? 31 : "");
