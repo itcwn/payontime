@@ -77,9 +77,9 @@
               <input class="input" type="date" name="due_date" id="due-date" />
             </div>
             <div id="recurring-field" class="stack" style="display: none;">
-              <label class="stack">
-                Okres rozliczeniowy
-                <select id="interval-option" name="interval_option" class="select">
+              <div class="field-row">
+                <label class="field-label" for="interval-option">Okres rozliczeniowy</label>
+                <select id="interval-option" name="interval_option" class="select select-inline">
                   <option value="1w">1 tydzień</option>
                   <option value="2w">2 tygodnie</option>
                   <option value="1m" selected>Miesiąc</option>
@@ -87,12 +87,14 @@
                   <option value="3m">Kwartał</option>
                   <option value="12m">Rok</option>
                 </select>
-              </label>
-              <label class="stack">
-                Dzień płatności w cyklu rozliczeniowym
-                <input class="input input-compact" type="number" min="1" max="31" name="day_of_month" id="day-of-month" />
+              </div>
+              <div class="stack">
+                <div class="field-row">
+                  <label class="field-label" for="day-of-month">Dzień płatności w cyklu rozliczeniowym</label>
+                  <input class="input input-compact" type="number" min="1" max="31" name="day_of_month" id="day-of-month" />
+                </div>
                 <span class="help-text">Jeśli miesiąc ma mniej dni, termin przesuwa się na ostatni dzień miesiąca.</span>
-              </label>
+              </div>
             </div>
           </div>
 
