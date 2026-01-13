@@ -4,34 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="./ZaplacNaCzas.ico" />
-    <title>ZapłaćNaCzas - Logowanie</title>
+    <title>ZapłaćNaCzas - Zgłoś pomysł</title>
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <main class="centered">
-      <div class="card auth-card">
-        <h1>Zaloguj się</h1>
-        <p class="muted">Podaj dane logowania do ZapłaćNaCzas.</p>
-        <form id="login-form" class="stack">
+    <header class="card" style="border-radius: 0; box-shadow: none;">
+      <div class="container page-header">
+        <a class="brand" href="./app.html">
+          <img src="./css/logo_m.png" alt="ZapłaćNaCzas" />
+        </a>
+        <nav class="nav">
+          <a href="./app.html">Dashboard</a>
+          <a href="./payments-new.html">Nowa płatność</a>
+          <a href="./settings.html">Ustawienia</a>
+        </nav>
+      </div>
+    </header>
+    <main class="container">
+      <div class="card">
+        <div class="page-header">
+          <div>
+            <h1>Zgłoś pomysł</h1>
+            <p class="muted">Podziel się propozycją usprawnienia aplikacji.</p>
+          </div>
+        </div>
+        <form id="feedback-form" class="stack" data-feedback-type="idea">
           <label class="stack">
-            Email
-            <input class="input" type="email" name="email" required />
+            Tytuł pomysłu
+            <input class="input" type="text" name="title" required />
           </label>
           <label class="stack">
-            Hasło
-            <input class="input" type="password" name="password" required />
+            Opis pomysłu
+            <textarea class="input" name="description" rows="6" required></textarea>
+            <span class="help-text">Opisz wartość dla użytkownika i kontekst.</span>
           </label>
-          <p id="auth-error" class="error-text"></p>
-          <button type="submit" class="button button-primary" style="width: 100%;">
-            Zaloguj się
-          </button>
+          <p id="feedback-error" class="error-text"></p>
+          <p id="feedback-success" class="help-text"></p>
+          <button type="submit" class="button button-primary">Wyślij pomysł</button>
         </form>
-        <p class="muted" style="text-align: center;">
-          Nie masz konta? <a class="link" href="./signup.html">Załóż je</a>
-        </p>
-        <p class="footer-links">
-          <a href="./legal.html">Regulamin i polityka prywatności</a>
-        </p>
       </div>
     </main>
     <footer class="site-footer">
@@ -59,9 +69,8 @@
         <div class="footer-section">
           <h3>Przydatne linki</h3>
           <ul class="footer-links-list">
-            <li><a href="./index.html">Strona główna</a></li>
-            <li><a href="./login.html">Logowanie</a></li>
-            <li><a href="./signup.html">Rejestracja</a></li>
+            <li><a href="./app.html">Dashboard</a></li>
+            <li><a href="./payments-new.html">Nowa płatność</a></li>
             <li><a href="./report-bug.html">Zgłoś błąd</a></li>
             <li><a href="./report-idea.html">Zgłoś pomysł</a></li>
             <li><a href="./legal.html">Regulamin</a></li>
@@ -70,6 +79,6 @@
       </div>
       <div class="footer-bottom">© 2024 ZapłaćNaCzas. Wszelkie prawa zastrzeżone.</div>
     </footer>
-    <script type="module" src="./js/login.js"></script>
+    <script type="module" src="./js/feedback-form.js"></script>
   </body>
 </html>
