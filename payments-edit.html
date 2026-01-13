@@ -81,20 +81,22 @@
             <div id="recurring-field" class="stack" style="display: none;">
               <div class="field-row">
                 <label class="field-label" for="interval-option">Okres rozliczeniowy</label>
-                <select id="interval-option" name="interval_option" class="select select-inline">
-                  <option value="1w">1 tydzień</option>
-                  <option value="2w">2 tygodnie</option>
-                  <option value="1m" selected>Miesiąc</option>
-                  <option value="2m">2 miesiące</option>
-                  <option value="3m">Kwartał</option>
-                  <option value="12m">Rok</option>
-                </select>
+                <input type="hidden" id="interval-option" name="interval_option" value="1m" />
+              </div>
+              <div class="choice-group" id="interval-options" role="group" aria-label="Okres rozliczeniowy">
+                <button class="choice-button" type="button" data-value="1w">1 tydzień</button>
+                <button class="choice-button" type="button" data-value="2w">2 tygodnie</button>
+                <button class="choice-button is-selected" type="button" data-value="1m">Miesiąc</button>
+                <button class="choice-button" type="button" data-value="2m">2 miesiące</button>
+                <button class="choice-button" type="button" data-value="3m">Kwartał</button>
+                <button class="choice-button" type="button" data-value="12m">Rok</button>
               </div>
               <div class="stack">
                 <div class="field-row">
                   <label class="field-label" for="day-of-month">Dzień płatności w cyklu rozliczeniowym</label>
-                  <input class="input input-compact" type="number" min="1" max="31" name="day_of_month" id="day-of-month" />
+                  <input type="hidden" name="day_of_month" id="day-of-month" />
                 </div>
+                <div class="choice-group" id="day-options" role="group" aria-label="Dzień płatności"></div>
                 <span class="help-text">Jeśli miesiąc ma mniej dni, termin przesuwa się na ostatni dzień miesiąca.</span>
               </div>
             </div>
