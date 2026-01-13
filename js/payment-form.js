@@ -17,6 +17,8 @@ const intervalInput = document.getElementById("interval-option");
 const intervalButtons = document.querySelectorAll("#interval-options .choice-button");
 const typeSelect = document.getElementById("payment-type");
 const isActiveInput = document.getElementById("is-active");
+const isFixedInput = document.getElementById("is-fixed");
+const isAutomaticInput = document.getElementById("is-automatic");
 const dayOfMonthInput = document.getElementById("day-of-month");
 const dayOptions = document.getElementById("day-options");
 const reminderPreview = document.getElementById("reminder-preview");
@@ -190,6 +192,12 @@ async function loadPayment() {
   if (isActiveInput) {
     isActiveInput.checked = payment.is_active ?? true;
   }
+  if (isFixedInput) {
+    isFixedInput.checked = payment.is_fixed ?? false;
+  }
+  if (isAutomaticInput) {
+    isAutomaticInput.checked = payment.is_automatic ?? false;
+  }
   const scheduleValue = payment.schedule_mode === "monthly" ? "recurring" : payment.schedule_mode;
   form.querySelector(`input[name='schedule_mode'][value='${scheduleValue}']`).checked = true;
   form.querySelector("#due-date").value = payment.due_date ?? "";
@@ -224,6 +232,8 @@ form.addEventListener("submit", async (event) => {
   const intervalConfig = parseIntervalOption(selectedInterval);
   const recurringDayOfMonth = Number(formData.get("day_of_month")) || existingDayOfMonth || new Date().getDate();
   const isActive = formData.get("is_active") === "on";
+  const isFixed = formData.get("is_fixed") === "on";
+  const isAutomatic = formData.get("is_automatic") === "on";
 
   const payload = {
     payment_type: formData.get("payment_type"),
@@ -239,7 +249,9 @@ form.addEventListener("submit", async (event) => {
     day_of_month: scheduleMode === "recurring" ? recurringDayOfMonth : null,
     is_last_day: scheduleMode === "recurring" ? existingIsLastDay : false,
     remind_offsets: remindOffsets.length ? remindOffsets : [-3],
-    is_active: isActive
+    is_active: isActive,
+    is_fixed: isFixed,
+    is_automatic: isAutomatic
   };
 
   try {
