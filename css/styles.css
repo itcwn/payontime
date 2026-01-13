@@ -403,6 +403,14 @@ main {
   padding: 10px 8px;
 }
 
+.input-pill {
+  width: 64px;
+  min-width: 64px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-align: center;
+}
+
 .input:disabled {
   background: #f3f4f6;
 }
@@ -410,6 +418,10 @@ main {
 .help-text {
   font-size: 0.8rem;
   color: #9ca3af;
+}
+
+.help-text-right {
+  text-align: right;
 }
 
 .error-text {
