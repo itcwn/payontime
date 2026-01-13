@@ -295,6 +295,10 @@ main {
   gap: 12px;
 }
 
+.schedule-row {
+  padding-bottom: 15px;
+}
+
 .choice-group {
   display: flex;
   flex-wrap: wrap;
