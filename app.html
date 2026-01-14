@@ -41,19 +41,33 @@
         <div class="page-header">
           <h2>Płatności</h2>
         </div>
-        <div class="tabs" role="tablist" aria-label="Zakładki płatności">
-          <button class="tab-button is-active" type="button" data-tab="seven" role="tab" aria-selected="true">
-            7 dni <span class="tab-count" id="seven-count">0</span>
-          </button>
-          <button class="tab-button" type="button" data-tab="thirty" role="tab" aria-selected="false">
-            30 dni <span class="tab-count" id="thirty-count">0</span>
-          </button>
-          <button class="tab-button" type="button" data-tab="ninety" role="tab" aria-selected="false">
-            90 dni <span class="tab-count" id="ninety-count">0</span>
-          </button>
-          <button class="tab-button" type="button" data-tab="all" role="tab" aria-selected="false">
-            Wszystkie <span class="tab-count" id="all-count">0</span>
-          </button>
+        <div class="tabs-header">
+          <div class="tabs" role="tablist" aria-label="Zakładki płatności">
+            <button class="tab-button is-active" type="button" data-tab="seven" role="tab" aria-selected="true">
+              7 dni <span class="tab-count" id="seven-count">0</span>
+            </button>
+            <button class="tab-button" type="button" data-tab="thirty" role="tab" aria-selected="false">
+              30 dni <span class="tab-count" id="thirty-count">0</span>
+            </button>
+            <button class="tab-button" type="button" data-tab="ninety" role="tab" aria-selected="false">
+              90 dni <span class="tab-count" id="ninety-count">0</span>
+            </button>
+            <button class="tab-button" type="button" data-tab="all" role="tab" aria-selected="false">
+              Wszystkie <span class="tab-count" id="all-count">0</span>
+            </button>
+          </div>
+          <div class="tab-toolbar is-hidden" id="all-tab-toolbar" aria-hidden="true">
+            <label class="switch">
+              <input type="checkbox" id="all-nearest-toggle" checked />
+              <span class="switch-track" aria-hidden="true"></span>
+              <span class="switch-text">Pokaż tylko najbliższy termin</span>
+            </label>
+            <label class="switch">
+              <input type="checkbox" id="all-group-toggle" checked />
+              <span class="switch-track" aria-hidden="true"></span>
+              <span class="switch-text">Grupuj płatności</span>
+            </label>
+          </div>
         </div>
 
         <div class="tab-panel is-active" id="tab-seven" data-tab-panel="seven" role="tabpanel">
@@ -114,18 +128,6 @@
         </div>
 
         <div class="tab-panel" id="tab-all" data-tab-panel="all" role="tabpanel">
-          <div class="tab-toolbar">
-            <label class="switch">
-              <input type="checkbox" id="all-nearest-toggle" checked />
-              <span class="switch-track" aria-hidden="true"></span>
-              <span class="switch-text">Pokaż tylko najbliższy termin</span>
-            </label>
-            <label class="switch">
-              <input type="checkbox" id="all-group-toggle" checked />
-              <span class="switch-track" aria-hidden="true"></span>
-              <span class="switch-text">Grupuj płatności</span>
-            </label>
-          </div>
           <div style="overflow-x: auto;">
             <table class="table">
               <thead>
