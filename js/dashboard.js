@@ -18,15 +18,10 @@ const userEmail = document.getElementById("user-email");
 const logoutButton = document.getElementById("logout-button");
 const tabButtons = document.querySelectorAll(".tab-button");
 const tabPanels = document.querySelectorAll(".tab-panel");
-const allPrev = document.getElementById("all-prev");
-const allNext = document.getElementById("all-next");
-const allRange = document.getElementById("all-range");
-const allPageInfo = document.getElementById("all-page-info");
+const allNearestToggle = document.getElementById("all-nearest-toggle");
 const allGroupToggle = document.getElementById("all-group-toggle");
 const monthlyTotalEl = document.getElementById("monthly-total");
 const monthlyTotalMeta = document.getElementById("monthly-total-meta");
-const pageSize = 20;
-let currentAllPage = 1;
 let allItemsSorted = [];
 
 function setActiveTab(tabName) {
@@ -112,37 +107,30 @@ function renderGroupedTable(target, items) {
   });
 }
 
+function getNearestItems(items) {
+  const seenPayments = new Set();
+  return items.filter((item) => {
+    const key = item.payment.id ?? null;
+    if (key === null) {
+      return true;
+    }
+    if (seenPayments.has(key)) {
+      return false;
+    }
+    seenPayments.add(key);
+    return true;
+  });
+}
+
 function renderAllPage() {
   if (!allBody) return;
-  const totalItems = allItemsSorted.length;
-  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
-  currentAllPage = Math.min(Math.max(1, currentAllPage), totalPages);
-  const startIndex = (currentAllPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const pageItems = allItemsSorted.slice(startIndex, endIndex);
+  const itemsToRender = allNearestToggle?.checked
+    ? getNearestItems(allItemsSorted)
+    : allItemsSorted;
   if (allGroupToggle?.checked) {
-    renderGroupedTable(allBody, pageItems);
+    renderGroupedTable(allBody, itemsToRender);
   } else {
-    renderTable(allBody, pageItems);
-  }
-
-  if (allRange) {
-    allRange.textContent =
-      totalItems === 0
-        ? "Brak wpisów"
-        : `${startIndex + 1}-${Math.min(endIndex, totalItems)} z ${totalItems}`;
-  }
-
-  if (allPageInfo) {
-    allPageInfo.textContent = `Strona ${currentAllPage} z ${totalPages}`;
-  }
-
-  if (allPrev) {
-    allPrev.disabled = currentAllPage <= 1;
-  }
-
-  if (allNext) {
-    allNext.disabled = currentAllPage >= totalPages;
+    renderTable(allBody, itemsToRender);
   }
 }
 
@@ -187,16 +175,8 @@ function renderMonthlySummary(payments) {
   }
 }
 
-if (allPrev) {
-  allPrev.addEventListener("click", () => {
-    currentAllPage -= 1;
-    renderAllPage();
-  });
-}
-
-if (allNext) {
-  allNext.addEventListener("click", () => {
-    currentAllPage += 1;
+if (allNearestToggle) {
+  allNearestToggle.addEventListener("change", () => {
     renderAllPage();
   });
 }
@@ -224,7 +204,6 @@ async function loadDashboard() {
     const payments = await fetchPayments();
     const sections = buildDashboardSections(payments);
     allItemsSorted = sortAllItems(sections.all);
-    currentAllPage = 1;
 
     renderTable(sevenBody, sections.sevenDays);
     renderTable(thirtyBody, sections.thirtyDays);
