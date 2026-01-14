@@ -14,10 +14,14 @@
           <img src="./css/logo_m.png" alt="ZapłaćNaCzas" />
         </a>
         <nav class="nav">
-          <a href="./app.html">Dashboard</a>
+          <a href="./app.html">Twoje płatności</a>
           <a href="./payments-new.html">Nowa płatność</a>
           <a href="./settings.html">Ustawienia</a>
         </nav>
+        <div class="header-user">
+          <span class="muted">Zalogowany jako <strong id="user-email"></strong></span>
+          <button class="button button-secondary button-compact" type="button" id="logout-button">Wyloguj</button>
+        </div>
       </div>
     </header>
     <main class="container stack">
@@ -26,7 +30,6 @@
           <div>
             <h1>Twoja tablica płatności</h1>
             <h4>Płać na czas i oszczędzaj na kosztach opóźnień</h4>
-            <p class="muted">Zalogowany jako <span id="user-email"></span></p>
           </div>
           <a class="button button-primary" href="./payments-new.html">Dodaj płatność</a>
         </div>
@@ -44,6 +47,9 @@
           </button>
           <button class="tab-button" type="button" data-tab="thirty" role="tab" aria-selected="false">
             30 dni <span class="tab-count" id="thirty-count">0</span>
+          </button>
+          <button class="tab-button" type="button" data-tab="ninety" role="tab" aria-selected="false">
+            90 dni <span class="tab-count" id="ninety-count">0</span>
           </button>
           <button class="tab-button" type="button" data-tab="all" role="tab" aria-selected="false">
             Wszystkie <span class="tab-count" id="all-count">0</span>
@@ -88,7 +94,33 @@
           </div>
         </div>
 
+        <div class="tab-panel" id="tab-ninety" data-tab-panel="ninety" role="tabpanel">
+          <div style="overflow-x: auto;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Typ</th>
+                  <th>Nazwa</th>
+                  <th>Kwota</th>
+                  <th>Następny termin</th>
+                  <th>Adres dostawcy</th>
+                  <th>Status</th>
+                  <th aria-label="Akcje"></th>
+                </tr>
+              </thead>
+              <tbody id="ninety-body"></tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="tab-panel" id="tab-all" data-tab-panel="all" role="tabpanel">
+          <div class="tab-toolbar">
+            <label class="switch">
+              <input type="checkbox" id="all-group-toggle" checked />
+              <span class="switch-track" aria-hidden="true"></span>
+              <span class="switch-text">Grupuj płatności</span>
+            </label>
+          </div>
           <div style="overflow-x: auto;">
             <table class="table">
               <thead>
