@@ -144,6 +144,21 @@
                   </div>
                   <div class="choice-group" id="day-options" role="group" aria-label="Dzień płatności"></div>
                 </div>
+                <div class="stack" id="month-field" style="display: none;">
+                  <div class="field-row">
+                    <label class="field-label label-with-tooltip" for="month-of-year">
+                      <span>Miesiąc płatności w cyklu rocznym</span>
+                      <span class="tooltip" tabindex="0">
+                        <span class="tooltip-icon" aria-hidden="true">I</span>
+                        <span class="tooltip-content" role="tooltip">
+                          Wybierz miesiąc, w którym ma przypadać płatność roczna.
+                        </span>
+                      </span>
+                    </label>
+                    <input type="hidden" name="month_of_year" id="month-of-year" />
+                  </div>
+                  <div class="choice-group" id="month-options" role="group" aria-label="Miesiąc płatności"></div>
+                </div>
               </div>
             </div>
 
@@ -198,7 +213,13 @@
           </div>
 
           <p id="form-error" class="error-text"></p>
-          <button type="submit" class="button button-primary">Zapisz</button>
+          <div class="row form-actions">
+            <div class="row">
+              <a class="button button-secondary" href="./app.html">Anuluj</a>
+              <button type="button" class="button button-danger" id="delete-payment">Usuń</button>
+            </div>
+            <button type="submit" class="button button-primary">Zapisz</button>
+          </div>
         </form>
       </div>
     </main>

@@ -296,6 +296,15 @@ main {
   border-color: #d1d5db;
 }
 
+.button-danger {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.button-danger:hover {
+  background: #dc2626;
+}
+
 .hero {
   background: var(--primary);
   color: #ffffff;
@@ -346,8 +355,8 @@ main {
 }
 
 .choice-button.is-selected {
-  background: #22c55e;
-  border-color: #16a34a;
+  background: var(--primary);
+  border-color: var(--primary-dark);
   color: #ffffff;
 }
 
@@ -361,6 +370,11 @@ main {
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 16px;
+}
+
+.form-actions {
+  justify-content: space-between;
+  align-items: center;
 }
 
 .tabs-header {
