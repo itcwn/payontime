@@ -116,6 +116,11 @@
         <div class="tab-panel" id="tab-all" data-tab-panel="all" role="tabpanel">
           <div class="tab-toolbar">
             <label class="switch">
+              <input type="checkbox" id="all-nearest-toggle" checked />
+              <span class="switch-track" aria-hidden="true"></span>
+              <span class="switch-text">Pokaż tylko najbliższy termin</span>
+            </label>
+            <label class="switch">
               <input type="checkbox" id="all-group-toggle" checked />
               <span class="switch-track" aria-hidden="true"></span>
               <span class="switch-text">Grupuj płatności</span>
@@ -136,14 +141,6 @@
               </thead>
               <tbody id="all-body"></tbody>
             </table>
-          </div>
-          <div class="pagination" id="all-pagination">
-            <button class="button button-secondary" type="button" id="all-prev">Poprzednia</button>
-            <div class="pagination-meta" aria-live="polite">
-              <span id="all-range" class="muted"></span>
-              <span id="all-page-info" class="muted"></span>
-            </div>
-            <button class="button button-secondary" type="button" id="all-next">Następna</button>
           </div>
         </div>
       </section>
