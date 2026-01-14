@@ -479,6 +479,45 @@ main {
   flex: 1 1 220px;
 }
 
+.payment-type-controls .select {
+  min-width: 200px;
+  transition: flex-basis 0.2s ease;
+}
+
+.payment-type-controls.is-search-open .select {
+  flex-basis: 180px;
+}
+
+.payment-type-search {
+  display: none;
+}
+
+.payment-type-controls.is-search-open .payment-type-search {
+  display: block;
+}
+
+.payment-type-search-toggle {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #4b5563;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payment-type-search-toggle:hover {
+  border-color: #9ca3af;
+}
+
+.payment-type-search-toggle:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
 .input-icon {
   position: relative;
   flex: 1 1 220px;

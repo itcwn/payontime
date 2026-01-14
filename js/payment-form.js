@@ -17,8 +17,11 @@ const intervalInput = document.getElementById("interval-option");
 const intervalButtons = document.querySelectorAll("#interval-options .choice-button");
 const typeSelect = document.getElementById("payment-type");
 const typeSearchInput = document.getElementById("payment-type-search");
+const typeSearchToggle = document.getElementById("payment-type-search-toggle");
 const typeCustomInput = document.getElementById("payment-type-custom");
 const typeToggleButton = document.getElementById("payment-type-toggle");
+const typeControls = document.querySelector(".payment-type-controls");
+const typeSearchWrapper = typeSearchInput?.closest(".payment-type-search");
 const isActiveInput = document.getElementById("is-active");
 const isFixedInput = document.getElementById("is-fixed");
 const isAutomaticInput = document.getElementById("is-automatic");
@@ -42,11 +45,17 @@ function isCustomPaymentType() {
 
 function setCustomPaymentType(enabled) {
   if (!typeSelect || !typeCustomInput || !typeToggleButton || !typeSearchInput) return;
-  const searchWrapper = typeSearchInput.closest(".input-icon");
   if (enabled) {
     typeSelect.style.display = "none";
-    if (searchWrapper) {
-      searchWrapper.style.display = "none";
+    setSearchVisibility(false);
+    if (typeSearchWrapper) {
+      typeSearchWrapper.setAttribute("aria-hidden", "true");
+    }
+    if (typeSearchToggle) {
+      typeSearchToggle.style.display = "none";
+    }
+    if (typeControls) {
+      typeControls.classList.remove("is-search-open");
     }
     typeCustomInput.style.display = "block";
     typeToggleButton.textContent = "Wybierz z listy";
@@ -56,8 +65,11 @@ function setCustomPaymentType(enabled) {
     typeCustomInput.focus();
   } else {
     typeSelect.style.display = "block";
-    if (searchWrapper) {
-      searchWrapper.style.display = "block";
+    if (typeSearchWrapper) {
+      typeSearchWrapper.setAttribute("aria-hidden", typeControls?.classList.contains("is-search-open") ? "false" : "true");
+    }
+    if (typeSearchToggle) {
+      typeSearchToggle.style.display = "inline-flex";
     }
     typeCustomInput.style.display = "none";
     typeToggleButton.textContent = "Dodaj własną";
@@ -66,6 +78,19 @@ function setCustomPaymentType(enabled) {
     if (matchedType) {
       typeSelect.value = matchedType;
     }
+  }
+}
+
+function setSearchVisibility(isOpen) {
+  if (!typeControls || !typeSearchInput || !typeSearchWrapper || !typeSearchToggle) return;
+  typeControls.classList.toggle("is-search-open", isOpen);
+  typeSearchWrapper.setAttribute("aria-hidden", isOpen ? "false" : "true");
+  typeSearchToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  if (isOpen) {
+    typeSearchInput.focus();
+  } else {
+    typeSearchInput.value = "";
+    filterPaymentTypes("");
   }
 }
 
@@ -258,6 +283,14 @@ form.querySelectorAll("input[name='remind_offsets']").forEach((checkbox) => {
 });
 
 document.getElementById("due-date").addEventListener("change", buildReminderPreview);
+
+if (typeSearchToggle && typeSearchInput) {
+  typeSearchToggle.setAttribute("aria-expanded", "false");
+  typeSearchToggle.addEventListener("click", () => {
+    const isOpen = typeControls?.classList.contains("is-search-open");
+    setSearchVisibility(!isOpen);
+  });
+}
 
 if (typeSearchInput) {
   typeSearchInput.addEventListener("input", (event) => {
