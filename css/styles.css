@@ -160,6 +160,30 @@ main {
   height: auto;
 }
 
+.header-user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.tab-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 12px 0 16px;
+}
+
+.table-group-row td {
+  background: #f8fafc;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.table-empty-row td {
+  text-align: center;
+  color: #94a3b8;
+}
+
 .brand-logo {
   display: block;
   width: 200px;
@@ -577,6 +601,11 @@ main {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+  }
+
+  .header-user {
+    align-items: flex-end;
+    text-align: right;
   }
 
   .page-header-actions {

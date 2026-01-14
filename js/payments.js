@@ -92,6 +92,7 @@ export function buildDashboardSections(payments) {
 
   const sevenDaysItems = listDueItems(payments, today, addDays(today, 7));
   const thirtyDaysItems = listDueItems(payments, today, addDays(today, 30));
+  const ninetyDaysItems = listDueItems(payments, today, addDays(today, 90));
   const yearAhead = addDays(today, 365);
   const allItems = [];
 
@@ -124,6 +125,7 @@ export function buildDashboardSections(payments) {
   return {
     sevenDays: sevenDaysItems,
     thirtyDays: thirtyDaysItems,
+    ninetyDays: ninetyDaysItems,
     all: allItems
   };
 }
