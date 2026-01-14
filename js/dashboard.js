@@ -20,6 +20,7 @@ const tabButtons = document.querySelectorAll(".tab-button");
 const tabPanels = document.querySelectorAll(".tab-panel");
 const allNearestToggle = document.getElementById("all-nearest-toggle");
 const allGroupToggle = document.getElementById("all-group-toggle");
+const allTabToolbar = document.getElementById("all-tab-toolbar");
 const monthlyTotalEl = document.getElementById("monthly-total");
 const monthlyTotalMeta = document.getElementById("monthly-total-meta");
 let allItemsSorted = [];
@@ -34,6 +35,12 @@ function setActiveTab(tabName) {
   tabPanels.forEach((panel) => {
     panel.classList.toggle("is-active", panel.dataset.tabPanel === tabName);
   });
+
+  if (allTabToolbar) {
+    const showToolbar = tabName === "all";
+    allTabToolbar.classList.toggle("is-hidden", !showToolbar);
+    allTabToolbar.setAttribute("aria-hidden", showToolbar ? "false" : "true");
+  }
 }
 
 tabButtons.forEach((button) => {

@@ -169,8 +169,13 @@ main {
 
 .tab-toolbar {
   display: flex;
-  justify-content: flex-end;
-  margin: 12px 0 16px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.tab-toolbar.is-hidden {
+  display: none;
 }
 
 .table-group-row td {
@@ -356,6 +361,14 @@ main {
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 16px;
+}
+
+.tabs-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
 }
 
 .tab-button {
