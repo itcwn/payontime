@@ -65,6 +65,15 @@ function getIntervalConfig(payment) {
   return { unit: "months", value: 1 };
 }
 
+function resolveMonthlyDay(payment, fallbackDay, year, month) {
+  const monthLastDay = lastDayOfMonth(year, month);
+  if (payment.is_last_day) {
+    return monthLastDay;
+  }
+  const baseDay = payment.day_of_month ?? fallbackDay;
+  return Math.min(baseDay, monthLastDay);
+}
+
 export function computeNextDueDate(payment, fromDate = new Date(), timezone = defaultTimezone) {
   if (payment.schedule_mode === "one_time") {
     if (!payment.due_date) {
@@ -84,10 +93,32 @@ export function computeNextDueDate(payment, fromDate = new Date(), timezone = de
   if (interval.unit === "weeks") {
     const todayString = formatDateString(fromDate, timezone);
     let candidate = buildUTCDate(year, month, baseDay);
+    if (payment.cycle_start_date) {
+      const { year: startYear, month: startMonth, day: startDay } = parseDateString(payment.cycle_start_date);
+      candidate = buildUTCDate(startYear, startMonth, startDay);
+    }
     while (dateStringToNumber(formatDateString(candidate, timezone)) < dateStringToNumber(todayString)) {
       candidate = addDays(candidate, interval.value * 7);
     }
     return formatDateString(candidate, timezone);
+  }
+
+  if (payment.cycle_start_date) {
+    const { year: startYear, month: startMonth, day: startDay } = parseDateString(payment.cycle_start_date);
+    const todayNumber = dateStringToNumber(formatDateString(fromDate, timezone));
+    let currentYear = startYear;
+    let currentMonth = startMonth;
+
+    while (true) {
+      const candidateDay = resolveMonthlyDay(payment, startDay, currentYear, currentMonth);
+      const candidateDate = buildDateString(currentYear, currentMonth, candidateDay);
+      if (dateStringToNumber(candidateDate) >= todayNumber) {
+        return candidateDate;
+      }
+      const next = addMonths(currentYear, currentMonth, interval.value);
+      currentYear = next.year;
+      currentMonth = next.month;
+    }
   }
 
   const monthLastDay = lastDayOfMonth(year, month);
@@ -141,6 +172,10 @@ export function listDueItems(payments, windowStart, windowEnd, timezone = defaul
       const monthLastDay = lastDayOfMonth(startYear, startMonth);
       const baseDay = Math.min(payment.day_of_month ?? 1, monthLastDay);
       let candidate = buildUTCDate(startYear, startMonth, baseDay);
+      if (payment.cycle_start_date) {
+        const { year: cycleYear, month: cycleMonth, day: cycleDay } = parseDateString(payment.cycle_start_date);
+        candidate = buildUTCDate(cycleYear, cycleMonth, cycleDay);
+      }
       while (dateStringToNumber(formatDateString(candidate, timezone)) < startNumber) {
         candidate = addDays(candidate, interval.value * 7);
       }
@@ -154,6 +189,31 @@ export function listDueItems(payments, windowStart, windowEnd, timezone = defaul
 
     let year = startYear;
     let month = startMonth;
+
+    if (payment.cycle_start_date) {
+      const { year: cycleYear, month: cycleMonth, day: cycleDay } = parseDateString(payment.cycle_start_date);
+      const fallbackDay = cycleDay;
+      year = cycleYear;
+      month = cycleMonth;
+      while (year < endYear || (year === endYear && month <= endMonth)) {
+        const day = resolveMonthlyDay(payment, fallbackDay, year, month);
+        const dueDate = buildDateString(year, month, day);
+        const dueNumber = dateStringToNumber(dueDate);
+
+        if (dueNumber > endNumber) {
+          break;
+        }
+
+        if (dueNumber >= startNumber && dueNumber <= endNumber) {
+          results.push({ payment, dueDate });
+        }
+
+        const next = addMonths(year, month, interval.value);
+        year = next.year;
+        month = next.month;
+      }
+      continue;
+    }
 
     while (year < endYear || (year === endYear && month <= endMonth)) {
       const monthLastDay = lastDayOfMonth(year, month);
