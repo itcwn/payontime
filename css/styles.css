@@ -281,6 +281,34 @@ main {
   gap: 12px;
 }
 
+.choice-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.choice-button {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.choice-button.is-selected {
+  background: var(--primary);
+  border-color: var(--primary-dark);
+  color: #ffffff;
+}
+
+.choice-button:focus-visible {
+  outline: 2px solid var(--primary-dark);
+  outline-offset: 2px;
+}
+
 .tabs {
   display: flex;
   flex-wrap: wrap;
