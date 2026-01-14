@@ -46,6 +46,20 @@ main {
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
+.monthly-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.monthly-summary-value {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
 .auth-card {
   width: 100%;
   max-width: 1100px;
@@ -281,6 +295,10 @@ main {
   gap: 12px;
 }
 
+.schedule-row {
+  padding-bottom: 15px;
+}
+
 .choice-group {
   display: flex;
   flex-wrap: wrap;
@@ -299,13 +317,13 @@ main {
 }
 
 .choice-button.is-selected {
-  background: var(--primary);
-  border-color: var(--primary-dark);
+  background: #22c55e;
+  border-color: #16a34a;
   color: #ffffff;
 }
 
 .choice-button:focus-visible {
-  outline: 2px solid var(--primary-dark);
+  outline: 2px solid #16a34a;
   outline-offset: 2px;
 }
 
@@ -533,6 +551,17 @@ main {
 
   .footer-content {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .monthly-summary {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .monthly-summary-value {
+    align-items: flex-end;
+    text-align: right;
   }
 
   .pagination-meta {
