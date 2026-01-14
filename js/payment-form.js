@@ -25,6 +25,7 @@ const isAutomaticInput = document.getElementById("is-automatic");
 const dayOfMonthInput = document.getElementById("day-of-month");
 const dayOptions = document.getElementById("day-options");
 const reminderPreview = document.getElementById("reminder-preview");
+const cycleStartDateInput = document.getElementById("cycle-start-date");
 
 let existingDayOfMonth = null;
 let existingIsLastDay = false;
@@ -96,11 +97,20 @@ function updateScheduleVisibility() {
     if (dayOfMonthInput) {
       dayOfMonthInput.required = false;
     }
+    if (cycleStartDateInput) {
+      cycleStartDateInput.required = false;
+    }
   } else {
     dueDateField.style.display = "none";
     recurringField.style.display = "flex";
     if (dayOfMonthInput) {
       dayOfMonthInput.required = true;
+    }
+    if (cycleStartDateInput) {
+      cycleStartDateInput.required = true;
+      if (!cycleStartDateInput.value) {
+        cycleStartDateInput.value = formatDateString(new Date());
+      }
     }
   }
 }
@@ -186,6 +196,11 @@ function buildReminderPreview() {
   if (scheduleMode === "one_time") {
     dueDate = document.getElementById("due-date").value || null;
   } else {
+    const cycleStartDateValue = cycleStartDateInput?.value || null;
+    if (!cycleStartDateValue) {
+      reminderPreview.textContent = "Terminy najbliższych powiadomień: uzupełnij start cyklu.";
+      return;
+    }
     const dayOfMonthValue = Number(dayOfMonthInput?.value || 0);
     if (!dayOfMonthValue) {
       reminderPreview.textContent = "Terminy najbliższych powiadomień: uzupełnij dzień płatności.";
@@ -195,6 +210,7 @@ function buildReminderPreview() {
     const previewPayment = {
       schedule_mode: "recurring",
       day_of_month: dayOfMonthValue,
+      cycle_start_date: cycleStartDateValue,
       interval_unit: intervalConfig.interval_unit,
       interval_months: intervalConfig.interval_months,
       interval_weeks: intervalConfig.interval_weeks,
@@ -231,6 +247,10 @@ if (intervalInput) {
 
 if (dayOfMonthInput) {
   dayOfMonthInput.addEventListener("change", buildReminderPreview);
+}
+
+if (cycleStartDateInput) {
+  cycleStartDateInput.addEventListener("change", buildReminderPreview);
 }
 
 form.querySelectorAll("input[name='remind_offsets']").forEach((checkbox) => {
@@ -287,6 +307,9 @@ async function loadPayment() {
   const intervalWeeks = payment.interval_weeks ?? 1;
   const intervalValue =
     intervalUnit === "weeks" ? `${intervalWeeks}w` : `${intervalMonths}m`;
+  if (cycleStartDateInput) {
+    cycleStartDateInput.value = payment.cycle_start_date ?? "";
+  }
   if (dayOfMonthInput) {
     dayOfMonthInput.value = existingDayOfMonth ?? (existingIsLastDay ? 31 : "");
   }
@@ -313,6 +336,7 @@ form.addEventListener("submit", async (event) => {
   const isActive = formData.get("is_active") === "on";
   const isFixed = formData.get("is_fixed") === "on";
   const isAutomatic = formData.get("is_automatic") === "on";
+  const cycleStartDate = formData.get("cycle_start_date") || null;
 
   const payload = {
     payment_type: getPaymentTypeValue(),
@@ -322,6 +346,7 @@ form.addEventListener("submit", async (event) => {
     provider_address: formData.get("provider_address") || null,
     schedule_mode: scheduleMode,
     due_date: scheduleMode === "one_time" ? formData.get("due_date") : null,
+    cycle_start_date: scheduleMode === "recurring" ? cycleStartDate : null,
     interval_unit: scheduleMode === "recurring" ? intervalConfig.interval_unit : null,
     interval_months: scheduleMode === "recurring" ? intervalConfig.interval_months : null,
     interval_weeks: scheduleMode === "recurring" ? intervalConfig.interval_weeks : null,
