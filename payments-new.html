@@ -28,21 +28,32 @@
             <p class="muted">Dodaj termin płatności i ustaw przypomnienia.</p>
           </div>
           <div class="page-header-actions">
-            <span class="muted">Aktywacja</span>
+            <div class="label-with-tooltip muted">
+              <span>Aktywacja</span>
+              <span class="tooltip" tabindex="0">
+                <span class="tooltip-icon" aria-hidden="true">I</span>
+                <span class="tooltip-content" role="tooltip">
+                  Domyślnie każda nowa płatność jest aktywna. Wyłączenie aktywności spowoduje, że nie pojawi się ona w powiadomieniach.
+                </span>
+              </span>
+            </div>
             <label class="switch">
               <input type="checkbox" name="is_active" id="is-active" form="payment-form" checked />
               <span class="switch-track" aria-hidden="true"></span>
               <span class="switch-text">Płatność aktywna</span>
             </label>
-            <p class="help-text">
-              Domyślnie każda nowa płatność jest aktywna. Wyłączenie aktywności spowoduje, że nie pojawi się ona w powiadomieniach.
-            </p>
           </div>
         </div>
         <form id="payment-form" class="stack">
           <div class="form-grid">
             <label class="stack">
-              Płatność za
+              <span class="label-with-tooltip">
+                <span>Płatność za</span>
+                <span class="tooltip" tabindex="0">
+                  <span class="tooltip-icon" aria-hidden="true">I</span>
+                  <span class="tooltip-content" role="tooltip">Nie widzisz swojej płatności? Wybierz „Dodaj własną”.</span>
+                </span>
+              </span>
               <div class="payment-type-controls">
                 <select id="payment-type" name="payment_type" class="select"></select>
                 <button class="payment-type-search-toggle" type="button" id="payment-type-search-toggle" aria-label="Wyszukaj płatność">
@@ -55,7 +66,6 @@
                 <input class="input" type="text" id="payment-type-custom" placeholder="Wpisz własną kategorię" style="display: none;" />
                 <button class="button button-secondary button-compact" type="button" id="payment-type-toggle">Dodaj własną</button>
               </div>
-              <span class="help-text">Nie widzisz swojej płatności? Wybierz „Dodaj własną”.</span>
             </label>
             <label class="stack">
               Opis Twojej płatności
@@ -66,9 +76,14 @@
               <input class="input" type="text" name="amount" id="payment-amount" placeholder="np. 199.99" />
             </label>
             <label class="stack">
-              Adres do systemu / dostawcy (opcjonalnie)
+              <span class="label-with-tooltip">
+                <span>Adres do systemu / dostawcy (opcjonalnie)</span>
+                <span class="tooltip" tabindex="0">
+                  <span class="tooltip-icon" aria-hidden="true">I</span>
+                  <span class="tooltip-content" role="tooltip">Jeśli dodać przekierowanie z listy płatności i powiadomienia</span>
+                </span>
+              </span>
               <input class="input" type="text" name="provider_address" id="provider-address" placeholder="https://... lub eBOK" />
-              <span class="help-text">Jeśli dodać przekierowanie z listy płatności i powiadomienia</span>
             </label>
           </div>
 
@@ -91,9 +106,16 @@
               </div>
               <div id="recurring-field" class="stack" style="display: none;">
                 <label class="stack">
-                  Start cyklu rozliczeniowego
+                  <span class="label-with-tooltip">
+                    <span>Start cyklu rozliczeniowego</span>
+                    <span class="tooltip" tabindex="0">
+                      <span class="tooltip-icon" aria-hidden="true">I</span>
+                      <span class="tooltip-content" role="tooltip">
+                        Ustala pierwszy miesiąc cyklu (np. przy płatności co 2 miesiące).
+                      </span>
+                    </span>
+                  </span>
                   <input class="input" type="date" name="cycle_start_date" id="cycle-start-date" />
-                  <span class="help-text">Ustala pierwszy miesiąc cyklu (np. przy płatności co 2 miesiące).</span>
                 </label>
                 <div class="field-row">
                   <label class="field-label" for="interval-option">Okres rozliczeniowy</label>
@@ -109,20 +131,32 @@
                 </div>
                 <div class="stack">
                   <div class="field-row">
-                    <label class="field-label" for="day-of-month">Dzień płatności w cyklu rozliczeniowym</label>
+                    <label class="field-label label-with-tooltip" for="day-of-month">
+                      <span>Dzień płatności w cyklu rozliczeniowym</span>
+                      <span class="tooltip" tabindex="0">
+                        <span class="tooltip-icon" aria-hidden="true">I</span>
+                        <span class="tooltip-content" role="tooltip">
+                          Jeśli miesiąc ma mniej dni, termin przesuwa się na ostatni dzień miesiąca.
+                        </span>
+                      </span>
+                    </label>
                     <input type="hidden" name="day_of_month" id="day-of-month" />
                   </div>
                   <div class="choice-group" id="day-options" role="group" aria-label="Dzień płatności"></div>
-                  <span class="help-text help-text-right">
-                    Jeśli miesiąc ma mniej dni, termin przesuwa się na ostatni dzień miesiąca.
-                  </span>
                 </div>
               </div>
             </div>
 
             <div class="section">
-              <p><strong>Przypomnienia</strong></p>
-              <p class="help-text">Wybierz, kiedy mamy wysyłać przypomnienia o terminie płatności.</p>
+              <p class="label-with-tooltip">
+                <strong>Przypomnienia</strong>
+                <span class="tooltip" tabindex="0">
+                  <span class="tooltip-icon" aria-hidden="true">I</span>
+                  <span class="tooltip-content" role="tooltip">
+                    Wybierz, kiedy mamy wysyłać przypomnienia o terminie płatności.
+                  </span>
+                </span>
+              </p>
               <div class="row">
                 <label class="row" style="align-items: center;">
                   <input type="checkbox" name="remind_offsets" value="-14" />2 tygodnie przed
@@ -142,7 +176,15 @@
           </div>
 
           <div class="section">
-            <p><strong>Ustawienia płatności</strong></p>
+            <p class="label-with-tooltip">
+              <strong>Ustawienia płatności</strong>
+              <span class="tooltip" tabindex="0">
+                <span class="tooltip-icon" aria-hidden="true">I</span>
+                <span class="tooltip-content" role="tooltip">
+                  Te ustawienia pomogą w przygotowaniu statystyk dla użytkownika.
+                </span>
+              </span>
+            </p>
             <div class="row">
               <label class="row" style="align-items: center;">
                 <input type="checkbox" name="is_fixed" id="is-fixed" />
@@ -153,7 +195,6 @@
                 Mam włączoną płatność automatyczną
               </label>
             </div>
-            <p class="help-text">Te ustawienia pomogą w przygotowaniu statystyk dla użytkownika.</p>
           </div>
 
           <p id="form-error" class="error-text"></p>
