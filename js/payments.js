@@ -175,6 +175,17 @@ export async function updatePayment(id, payload) {
   }
 }
 
+export async function deletePayment(id) {
+  const { error } = await supabase
+    .from("payments")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function getPayment(id) {
   const { data, error } = await supabase
     .from("payments")

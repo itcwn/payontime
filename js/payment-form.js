@@ -5,7 +5,8 @@ import {
   getPayment,
   paymentTypes,
   renderPaymentTypeOptions,
-  updatePayment
+  updatePayment,
+  deletePayment
 } from "./payments.js";
 
 const form = document.getElementById("payment-form");
@@ -27,11 +28,29 @@ const isFixedInput = document.getElementById("is-fixed");
 const isAutomaticInput = document.getElementById("is-automatic");
 const dayOfMonthInput = document.getElementById("day-of-month");
 const dayOptions = document.getElementById("day-options");
+const monthOfYearInput = document.getElementById("month-of-year");
+const monthOptions = document.getElementById("month-options");
+const monthField = document.getElementById("month-field");
 const reminderPreview = document.getElementById("reminder-preview");
 const cycleStartDateInput = document.getElementById("cycle-start-date");
+const deleteButton = document.getElementById("delete-payment");
 
 let existingDayOfMonth = null;
 let existingIsLastDay = false;
+const monthNames = [
+  "Styczeń",
+  "Luty",
+  "Marzec",
+  "Kwiecień",
+  "Maj",
+  "Czerwiec",
+  "Lipiec",
+  "Sierpień",
+  "Wrzesień",
+  "Październik",
+  "Listopad",
+  "Grudzień"
+];
 
 const params = new URLSearchParams(window.location.search);
 const paymentId = params.get("id");
@@ -125,6 +144,9 @@ function updateScheduleVisibility() {
     if (cycleStartDateInput) {
       cycleStartDateInput.required = false;
     }
+    if (monthField) {
+      monthField.style.display = "none";
+    }
   } else {
     dueDateField.style.display = "none";
     recurringField.style.display = "flex";
@@ -137,6 +159,7 @@ function updateScheduleVisibility() {
         cycleStartDateInput.value = formatDateString(new Date());
       }
     }
+    updateMonthVisibility();
   }
 }
 
@@ -161,12 +184,39 @@ function getSelectedIntervalOption() {
   return intervalInput?.value ?? "1m";
 }
 
+function isYearlyInterval() {
+  const intervalConfig = parseIntervalOption(getSelectedIntervalOption());
+  return intervalConfig.interval_unit === "months" && intervalConfig.interval_months === 12;
+}
+
 function getMaxDaysForInterval() {
   const intervalConfig = parseIntervalOption(getSelectedIntervalOption());
   if (intervalConfig.interval_unit === "weeks" && intervalConfig.interval_weeks) {
     return intervalConfig.interval_weeks * 7;
   }
   return 31;
+}
+
+function getCycleStartDateParts() {
+  if (cycleStartDateInput?.value) {
+    const [year, month, day] = cycleStartDateInput.value.split("-").map(Number);
+    if (year && month && day) {
+      return { year, month, day };
+    }
+  }
+  const today = new Date();
+  return { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
+}
+
+function updateCycleStartDateFromMonthDay() {
+  if (!cycleStartDateInput || !isYearlyInterval()) return;
+  const selectedMonth = Number(monthOfYearInput?.value || 0);
+  if (!selectedMonth) return;
+  const { year } = getCycleStartDateParts();
+  const selectedDay = Number(dayOfMonthInput?.value || existingDayOfMonth || new Date().getDate());
+  const lastDay = new Date(year, selectedMonth, 0).getDate();
+  const safeDay = Math.min(selectedDay, lastDay);
+  cycleStartDateInput.value = formatDateString(new Date(Date.UTC(year, selectedMonth - 1, safeDay)));
 }
 
 function buildDayOptions() {
@@ -191,10 +241,50 @@ function buildDayOptions() {
       dayOfMonthInput.value = String(day);
       dayOptions.querySelectorAll(".choice-button").forEach((btn) => btn.classList.remove("is-selected"));
       button.classList.add("is-selected");
+      updateCycleStartDateFromMonthDay();
       buildReminderPreview();
     });
     dayOptions.appendChild(button);
   }
+}
+
+function buildMonthOptions() {
+  if (!monthOptions || !monthOfYearInput) return;
+  monthOptions.textContent = "";
+  let selectedMonth = Number(monthOfYearInput.value || getCycleStartDateParts().month);
+  if (selectedMonth < 1 || selectedMonth > 12) {
+    selectedMonth = getCycleStartDateParts().month;
+  }
+  monthOfYearInput.value = String(selectedMonth);
+  monthNames.forEach((label, index) => {
+    const month = index + 1;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "choice-button";
+    button.textContent = label;
+    button.dataset.value = String(month);
+    if (selectedMonth === month) {
+      button.classList.add("is-selected");
+    }
+    button.addEventListener("click", () => {
+      monthOfYearInput.value = String(month);
+      monthOptions.querySelectorAll(".choice-button").forEach((btn) => btn.classList.remove("is-selected"));
+      button.classList.add("is-selected");
+      updateCycleStartDateFromMonthDay();
+      buildReminderPreview();
+    });
+    monthOptions.appendChild(button);
+  });
+}
+
+function updateMonthVisibility() {
+  if (!monthField) return;
+  const shouldShow = isYearlyInterval();
+  monthField.style.display = shouldShow ? "flex" : "none";
+  if (!shouldShow) {
+    return;
+  }
+  buildMonthOptions();
 }
 
 function setIntervalOption(value) {
@@ -204,6 +294,7 @@ function setIntervalOption(value) {
     button.classList.toggle("is-selected", button.dataset.value === value);
   });
   buildDayOptions();
+  updateMonthVisibility();
 }
 
 function buildReminderPreview() {
@@ -271,11 +362,27 @@ if (intervalInput) {
 }
 
 if (dayOfMonthInput) {
-  dayOfMonthInput.addEventListener("change", buildReminderPreview);
+  dayOfMonthInput.addEventListener("change", () => {
+    updateCycleStartDateFromMonthDay();
+    buildReminderPreview();
+  });
 }
 
 if (cycleStartDateInput) {
-  cycleStartDateInput.addEventListener("change", buildReminderPreview);
+  cycleStartDateInput.addEventListener("change", () => {
+    if (isYearlyInterval()) {
+      const { month, day } = getCycleStartDateParts();
+      if (monthOfYearInput) {
+        monthOfYearInput.value = String(month);
+        buildMonthOptions();
+      }
+      if (dayOfMonthInput) {
+        dayOfMonthInput.value = String(day);
+        buildDayOptions();
+      }
+    }
+    buildReminderPreview();
+  });
 }
 
 form.querySelectorAll("input[name='remind_offsets']").forEach((checkbox) => {
@@ -346,6 +453,10 @@ async function loadPayment() {
   if (dayOfMonthInput) {
     dayOfMonthInput.value = existingDayOfMonth ?? (existingIsLastDay ? 31 : "");
   }
+  if (monthOfYearInput && payment.cycle_start_date) {
+    const [, month] = payment.cycle_start_date.split("-").map(Number);
+    monthOfYearInput.value = month ? String(month) : "";
+  }
   setIntervalOption(intervalValue);
 
   form.querySelectorAll("input[name='remind_offsets']").forEach((checkbox) => {
@@ -411,12 +522,39 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
+if (deleteButton) {
+  deleteButton.addEventListener("click", async () => {
+    if (!paymentId) {
+      form.reset();
+      updateScheduleVisibility();
+      buildDayOptions();
+      updateMonthVisibility();
+      buildReminderPreview();
+      return;
+    }
+    if (!window.confirm("Czy na pewno chcesz usunąć tę płatność?")) {
+      return;
+    }
+    try {
+      const session = await requireSession();
+      if (!session) {
+        return;
+      }
+      await deletePayment(paymentId);
+      window.location.href = "./app.html";
+    } catch (error) {
+      errorEl.textContent = error.message;
+    }
+  });
+}
+
 await requireSession();
 if (intervalInput) {
   setIntervalOption(getSelectedIntervalOption());
   buildDayOptions();
 }
 updateScheduleVisibility();
+updateMonthVisibility();
 buildReminderPreview();
 if (paymentId) {
   await loadPayment();
