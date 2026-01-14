@@ -42,9 +42,17 @@
         <form id="payment-form" class="stack">
           <div class="form-grid">
             <label class="stack">
-              Rodzaj płatności
-              <select id="payment-type" name="payment_type" class="select"></select>
-              <span class="help-text">Jeśli potrzebujesz własnego opisu, wpisz go w polu nazwy.</span>
+              Płatność za
+              <div class="payment-type-controls">
+                <div class="input-icon payment-type-search">
+                  <span class="input-icon-addon" aria-hidden="true">🔍</span>
+                  <input class="input" type="search" id="payment-type-search" placeholder="Wyszukaj na liście" autocomplete="off" />
+                </div>
+                <select id="payment-type" name="payment_type" class="select"></select>
+                <input class="input" type="text" id="payment-type-custom" placeholder="Wpisz własną kategorię" style="display: none;" />
+                <button class="button button-secondary button-compact" type="button" id="payment-type-toggle">Dodaj własną</button>
+              </div>
+              <span class="help-text">Nie widzisz swojej płatności? Wybierz „Dodaj własną”.</span>
             </label>
             <label class="stack">
               Opis Twojej płatności

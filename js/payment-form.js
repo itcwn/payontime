@@ -16,6 +16,9 @@ const recurringField = document.getElementById("recurring-field");
 const intervalInput = document.getElementById("interval-option");
 const intervalButtons = document.querySelectorAll("#interval-options .choice-button");
 const typeSelect = document.getElementById("payment-type");
+const typeSearchInput = document.getElementById("payment-type-search");
+const typeCustomInput = document.getElementById("payment-type-custom");
+const typeToggleButton = document.getElementById("payment-type-toggle");
 const isActiveInput = document.getElementById("is-active");
 const isFixedInput = document.getElementById("is-fixed");
 const isAutomaticInput = document.getElementById("is-automatic");
@@ -30,6 +33,60 @@ const params = new URLSearchParams(window.location.search);
 const paymentId = params.get("id");
 
 renderPaymentTypeOptions(typeSelect);
+const paymentTypeOptions = [...paymentTypes];
+
+function isCustomPaymentType() {
+  return typeCustomInput?.style.display !== "none";
+}
+
+function setCustomPaymentType(enabled) {
+  if (!typeSelect || !typeCustomInput || !typeToggleButton || !typeSearchInput) return;
+  const searchWrapper = typeSearchInput.closest(".input-icon");
+  if (enabled) {
+    typeSelect.style.display = "none";
+    if (searchWrapper) {
+      searchWrapper.style.display = "none";
+    }
+    typeCustomInput.style.display = "block";
+    typeToggleButton.textContent = "Wybierz z listy";
+    if (!typeCustomInput.value) {
+      typeCustomInput.value = typeSelect.value;
+    }
+    typeCustomInput.focus();
+  } else {
+    typeSelect.style.display = "block";
+    if (searchWrapper) {
+      searchWrapper.style.display = "block";
+    }
+    typeCustomInput.style.display = "none";
+    typeToggleButton.textContent = "Dodaj własną";
+    const customValue = typeCustomInput.value.trim();
+    const matchedType = paymentTypeOptions.find((type) => type.toLowerCase() === customValue.toLowerCase());
+    if (matchedType) {
+      typeSelect.value = matchedType;
+    }
+  }
+}
+
+function filterPaymentTypes(query) {
+  if (!typeSelect) return;
+  const normalized = query.trim().toLowerCase();
+  const filteredTypes = normalized
+    ? paymentTypeOptions.filter((type) => type.toLowerCase().includes(normalized))
+    : paymentTypeOptions;
+  const currentValue = typeSelect.value;
+  renderPaymentTypeOptions(typeSelect, filteredTypes);
+  if (filteredTypes.includes(currentValue)) {
+    typeSelect.value = currentValue;
+  }
+}
+
+function getPaymentTypeValue() {
+  if (typeCustomInput && typeCustomInput.style.display !== "none") {
+    return typeCustomInput.value.trim();
+  }
+  return typeSelect?.value ?? "";
+}
 
 function updateScheduleVisibility() {
   const mode = document.querySelector("input[name='schedule_mode']:checked").value;
@@ -182,10 +239,32 @@ form.querySelectorAll("input[name='remind_offsets']").forEach((checkbox) => {
 
 document.getElementById("due-date").addEventListener("change", buildReminderPreview);
 
+if (typeSearchInput) {
+  typeSearchInput.addEventListener("input", (event) => {
+    filterPaymentTypes(event.target.value);
+  });
+}
+
+if (typeToggleButton) {
+  typeToggleButton.addEventListener("click", () => {
+    setCustomPaymentType(!isCustomPaymentType());
+  });
+}
+
 async function loadPayment() {
   if (!paymentId) return;
   const payment = await getPayment(paymentId);
-  form.querySelector("#payment-type").value = payment.payment_type;
+  const paymentTypeValue = payment.payment_type ?? "";
+  const matchedType = paymentTypeOptions.find((type) => type.toLowerCase() === paymentTypeValue.toLowerCase());
+  if (matchedType) {
+    setCustomPaymentType(false);
+    form.querySelector("#payment-type").value = matchedType;
+  } else {
+    setCustomPaymentType(true);
+    if (typeCustomInput) {
+      typeCustomInput.value = paymentTypeValue;
+    }
+  }
   form.querySelector("#payment-name").value = payment.name ?? "";
   form.querySelector("#payment-amount").value = payment.amount ?? "";
   form.querySelector("#provider-address").value = payment.provider_address;
@@ -236,7 +315,7 @@ form.addEventListener("submit", async (event) => {
   const isAutomatic = formData.get("is_automatic") === "on";
 
   const payload = {
-    payment_type: formData.get("payment_type"),
+    payment_type: getPaymentTypeValue(),
     name: formData.get("name") || null,
     amount: formData.get("amount") ? Number(String(formData.get("amount")).replace(",", ".")) : null,
     currency: "PLN",
