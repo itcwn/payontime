@@ -13,12 +13,14 @@ const errorEl = document.getElementById("form-error");
 const scheduleRadios = document.querySelectorAll("input[name='schedule_mode']");
 const dueDateField = document.getElementById("due-date-field");
 const recurringField = document.getElementById("recurring-field");
-const intervalSelect = document.getElementById("interval-option");
+const intervalInput = document.getElementById("interval-option");
+const intervalButtons = document.querySelectorAll("#interval-options .choice-button");
 const typeSelect = document.getElementById("payment-type");
 const isActiveInput = document.getElementById("is-active");
 const isFixedInput = document.getElementById("is-fixed");
 const isAutomaticInput = document.getElementById("is-automatic");
 const dayOfMonthInput = document.getElementById("day-of-month");
+const dayOptions = document.getElementById("day-options");
 const reminderPreview = document.getElementById("reminder-preview");
 
 let existingDayOfMonth = null;
@@ -64,7 +66,52 @@ function parseIntervalOption(value) {
 }
 
 function getSelectedIntervalOption() {
-  return intervalSelect?.value ?? "1m";
+  return intervalInput?.value ?? "1m";
+}
+
+function getMaxDaysForInterval() {
+  const intervalConfig = parseIntervalOption(getSelectedIntervalOption());
+  if (intervalConfig.interval_unit === "weeks" && intervalConfig.interval_weeks) {
+    return intervalConfig.interval_weeks * 7;
+  }
+  return 31;
+}
+
+function buildDayOptions() {
+  if (!dayOptions || !dayOfMonthInput) return;
+  dayOptions.textContent = "";
+  const maxDays = getMaxDaysForInterval();
+  let selectedDay = Number(dayOfMonthInput.value || existingDayOfMonth || "");
+  if (selectedDay > maxDays) {
+    selectedDay = maxDays;
+    dayOfMonthInput.value = String(maxDays);
+  }
+  for (let day = 1; day <= maxDays; day += 1) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "choice-button";
+    button.textContent = String(day);
+    button.dataset.value = String(day);
+    if (selectedDay === day) {
+      button.classList.add("is-selected");
+    }
+    button.addEventListener("click", () => {
+      dayOfMonthInput.value = String(day);
+      dayOptions.querySelectorAll(".choice-button").forEach((btn) => btn.classList.remove("is-selected"));
+      button.classList.add("is-selected");
+      buildReminderPreview();
+    });
+    dayOptions.appendChild(button);
+  }
+}
+
+function setIntervalOption(value) {
+  if (!intervalInput) return;
+  intervalInput.value = value;
+  intervalButtons.forEach((button) => {
+    button.classList.toggle("is-selected", button.dataset.value === value);
+  });
+  buildDayOptions();
 }
 
 function buildReminderPreview() {
@@ -116,12 +163,17 @@ function buildReminderPreview() {
   reminderPreview.textContent = `Terminy najbliższych powiadomień: ${reminderDates.join(", ")}`;
 }
 
-if (intervalSelect) {
-  intervalSelect.addEventListener("change", buildReminderPreview);
+if (intervalInput) {
+  intervalButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setIntervalOption(button.dataset.value);
+      buildReminderPreview();
+    });
+  });
 }
 
 if (dayOfMonthInput) {
-  dayOfMonthInput.addEventListener("input", buildReminderPreview);
+  dayOfMonthInput.addEventListener("change", buildReminderPreview);
 }
 
 form.querySelectorAll("input[name='remind_offsets']").forEach((checkbox) => {
@@ -156,12 +208,10 @@ async function loadPayment() {
   const intervalWeeks = payment.interval_weeks ?? 1;
   const intervalValue =
     intervalUnit === "weeks" ? `${intervalWeeks}w` : `${intervalMonths}m`;
-  if (intervalSelect) {
-    intervalSelect.value = intervalValue;
-  }
   if (dayOfMonthInput) {
     dayOfMonthInput.value = existingDayOfMonth ?? (existingIsLastDay ? 31 : "");
   }
+  setIntervalOption(intervalValue);
 
   form.querySelectorAll("input[name='remind_offsets']").forEach((checkbox) => {
     checkbox.checked = payment.remind_offsets?.includes(Number(checkbox.value));
@@ -225,6 +275,10 @@ form.addEventListener("submit", async (event) => {
 });
 
 await requireSession();
+if (intervalInput) {
+  setIntervalOption(getSelectedIntervalOption());
+  buildDayOptions();
+}
 updateScheduleVisibility();
 buildReminderPreview();
 if (paymentId) {

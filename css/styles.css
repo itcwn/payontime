@@ -295,6 +295,38 @@ main {
   gap: 12px;
 }
 
+.schedule-row {
+  padding-bottom: 15px;
+}
+
+.choice-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.choice-button {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.choice-button.is-selected {
+  background: #22c55e;
+  border-color: #16a34a;
+  color: #ffffff;
+}
+
+.choice-button:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+
 .tabs {
   display: flex;
   flex-wrap: wrap;
