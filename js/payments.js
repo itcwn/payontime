@@ -2,20 +2,64 @@ import { supabase } from "./supabase-client.js";
 import { computeNextDueDate, formatDateString, listDueItems } from "./dates.js";
 
 export const paymentTypes = [
-  "czynsz",
-  "prąd",
-  "gaz",
-  "woda",
+  "Podatek od nieruchomości",
+  "Podatek od gruntu",
+  "Podatek (PIT)",
+  "Podatek (VAT)",
   "ZUS",
-  "podatek od nieruchomości",
-  "ubezpieczenie od nieruchomości",
+  "Badanie techniczne",
+  "OC",
+  "AC",
   "OC/AC",
-  "abonament RTV"
+  "Ubezpieczenie nieruchomości",
+  "Ubezpieczenie zdrowotne prywatne",
+  "Ubezpieczenie życia",
+  "Ubezpieczenie NNW",
+  "Ubezpieczenie turystyczne",
+  "Ubezpieczenie roweru",
+  "Ubezpieczenie hulajnogi",
+  "Ubezpieczenie sprzętu",
+  "NNW szkolne",
+  "Serwis klimatyzacji",
+  "Kominiarz",
+  "Przegląd elektryczny",
+  "Serwis auta",
+  "Przeglądy sprzętu / gwarancje",
+  "Kolonie",
+  "Zajęcia dodatkowe",
+  "Żłobek",
+  "Przedszkole",
+  "Kredyt hipoteczny",
+  "Kredyt konsumencki",
+  "Rata 0%",
+  "Karta kredytowa (min spłata)",
+  "Leasing auta",
+  "Leasing sprzętu",
+  "Księgowość",
+  "Księgowość online",
+  "Opłaty bankowe",
+  "Abonament parkingowy",
+  "Groomer",
+  "Weterynarz",
+  "Ubezpieczenie zwierzęcia",
+  "Alarm",
+  "Monitoring",
+  "Miejsce parkingowe",
+  "Garaż",
+  "Śmieci",
+  "Ogrzewanie",
+  "Czynsz",
+  "Prąd",
+  "Gaz",
+  "Woda",
+  "Internet",
+  "Telefon komórkowy",
+  "Telewizja"
 ];
 
-export function renderPaymentTypeOptions(select) {
+export function renderPaymentTypeOptions(select, types = paymentTypes) {
   select.innerHTML = "";
-  for (const type of paymentTypes) {
+  for (const type of types) {
     const option = document.createElement("option");
     option.value = type;
     option.textContent = type;

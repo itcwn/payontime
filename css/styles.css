@@ -443,6 +443,40 @@ main {
   font-size: 0.95rem;
 }
 
+.payment-type-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.payment-type-controls .select,
+.payment-type-controls .input {
+  flex: 1 1 220px;
+}
+
+.input-icon {
+  position: relative;
+  flex: 1 1 220px;
+}
+
+.input-icon .input {
+  padding-left: 36px;
+}
+
+.input-icon-addon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.button-compact {
+  padding: 10px 12px;
+}
+
 .input-compact {
   width: 4ch;
   min-width: 4ch;
