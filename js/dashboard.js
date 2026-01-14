@@ -19,6 +19,8 @@ const allPrev = document.getElementById("all-prev");
 const allNext = document.getElementById("all-next");
 const allRange = document.getElementById("all-range");
 const allPageInfo = document.getElementById("all-page-info");
+const monthlyTotalEl = document.getElementById("monthly-total");
+const monthlyTotalMeta = document.getElementById("monthly-total-meta");
 const pageSize = 20;
 let currentAllPage = 1;
 let allItemsSorted = [];
@@ -81,6 +83,47 @@ function renderAllPage() {
   }
 }
 
+function getMonthlySummary(payments) {
+  let total = 0;
+  let count = 0;
+  const monthlyFactor = 52 / 12;
+
+  payments.forEach((payment) => {
+    if (!payment?.is_active) return;
+    if (payment.schedule_mode === "one_time") return;
+    if (!payment.amount || Number.isNaN(Number(payment.amount))) return;
+
+    count += 1;
+    const amount = Number(payment.amount);
+    const intervalUnit = payment.interval_unit ?? (payment.schedule_mode === "monthly" ? "months" : "months");
+    const intervalMonths = payment.interval_months ?? 1;
+    const intervalWeeks = payment.interval_weeks ?? 1;
+
+    if (intervalUnit === "weeks") {
+      total += (amount / intervalWeeks) * monthlyFactor;
+    } else {
+      total += amount / intervalMonths;
+    }
+  });
+
+  return { total, count };
+}
+
+function renderMonthlySummary(payments) {
+  if (!monthlyTotalEl) return;
+  const { total, count } = getMonthlySummary(payments);
+  const formattedTotal = new Intl.NumberFormat("pl-PL", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(total);
+
+  monthlyTotalEl.textContent = `${formattedTotal} PLN`;
+  if (monthlyTotalMeta) {
+    monthlyTotalMeta.textContent =
+      count > 0 ? `Na podstawie ${count} aktywnych płatności.` : "Brak aktywnych płatności cyklicznych.";
+  }
+}
+
 if (allPrev) {
   allPrev.addEventListener("click", () => {
     currentAllPage -= 1;
@@ -111,6 +154,7 @@ async function loadDashboard() {
     renderTable(sevenBody, sections.sevenDays);
     renderTable(thirtyBody, sections.thirtyDays);
     renderAllPage();
+    renderMonthlySummary(payments);
 
     sevenCount.textContent = sections.sevenDays.length;
     thirtyCount.textContent = sections.thirtyDays.length;
