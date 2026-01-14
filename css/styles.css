@@ -486,6 +486,11 @@ main {
   padding: 16px;
 }
 
+.section-grid {
+  display: grid;
+  gap: 20px;
+}
+
 .field-row {
   display: flex;
   flex-wrap: wrap;
@@ -547,6 +552,11 @@ main {
 
   .form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
   }
 
   .footer-content {
