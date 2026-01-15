@@ -81,6 +81,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: 80px;
 }
 
 .site-header {
@@ -458,18 +459,18 @@ main {
 
 .hero {
   background: var(--primary);
-  color: #ffffff;
+  color: #111827;
   border-radius: 10px;
   padding: 32px;
 }
 
 .hero .button-primary {
-  background: #ffffff;
-  color: var(--primary-dark);
+  background: #111827;
+  color: #ffffff;
 }
 
 .hero .muted {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(17, 24, 39, 0.7);
 }
 
 .stack {
