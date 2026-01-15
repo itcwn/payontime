@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <header class="card" style="border-radius: 0; box-shadow: none;">
+    <header class="card site-header">
       <div class="container page-header">
         <a class="brand" href="./app.html">
           <img src="./css/logo_m.png" alt="ZapłaćNaCzas" />
@@ -19,8 +19,23 @@
           <a href="./settings.html">Ustawienia</a>
         </nav>
         <div class="header-user">
-          <span class="muted">Zalogowany jako <strong id="user-email"></strong></span>
-          <button class="button button-secondary button-compact" type="button" id="logout-button">Wyloguj</button>
+          <details class="user-menu">
+            <summary class="user-menu-toggle" aria-label="Menu użytkownika">
+              <span class="user-avatar" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21a8 8 0 0 0-16 0" />
+                  <circle cx="12" cy="7.5" r="4.5" />
+                </svg>
+              </span>
+              <span class="user-menu-email" id="user-email"></span>
+              <span class="user-menu-caret" aria-hidden="true">▾</span>
+            </summary>
+            <div class="user-menu-panel">
+              <div class="user-menu-meta">Konto</div>
+              <a class="user-menu-item" href="./settings.html">Ustawienia</a>
+              <button class="user-menu-item" type="button" id="logout-button">Wyloguj</button>
+            </div>
+          </details>
         </div>
       </div>
     </header>
