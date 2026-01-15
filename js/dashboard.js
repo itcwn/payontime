@@ -63,19 +63,19 @@ function sortAllItems(items) {
 function buildPaymentRow(item) {
   const row = document.createElement("tr");
   row.innerHTML = `
-      <td><strong>${item.payment.payment_type}</strong></td>
-      <td>${item.payment.name ?? "—"}</td>
-      <td>${item.payment.amount ? `${item.payment.amount} ${item.payment.currency}` : "—"}</td>
-      <td>${item.dueDate ?? "Brak"}
+      <td data-label="Typ"><strong>${item.payment.payment_type}</strong></td>
+      <td data-label="Nazwa">${item.payment.name ?? "—"}</td>
+      <td data-label="Kwota">${item.payment.amount ? `${item.payment.amount} ${item.payment.currency}` : "—"}</td>
+      <td data-label="Następny termin">${item.dueDate ?? "Brak"}
         ${item.isOverdue ? '<span class="badge badge-danger">po terminie</span>' : ""}
       </td>
-      <td>${item.payment.provider_address || "—"}</td>
-      <td>
+      <td data-label="Adres dostawcy">${item.payment.provider_address || "—"}</td>
+      <td data-label="Status">
         ${item.payment.is_active
           ? '<span class="badge badge-success">aktywna</span>'
           : '<span class="badge badge-muted">wstrzymana</span>'}
       </td>
-      <td>
+      <td data-label="Akcje">
         <div class="table-actions">
           <a class="link" href="./payments-edit.html?id=${item.payment.id}" aria-label="Edytuj płatność">✏️</a>
         </div>

@@ -5,7 +5,12 @@ const headerTemplates = {
         <a class="brand" href="./app.html">
           <img src="./css/logo_m.png" alt="ZapłaćNaCzas" />
         </a>
-        <nav class="nav">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Otwórz menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav class="nav" id="primary-nav">
           <a href="./app.html">Twoje płatności</a>
           <a href="./payments-new.html">Nowa płatność</a>
           <a href="./settings.html">Ustawienia</a>
@@ -38,7 +43,12 @@ const headerTemplates = {
         <a class="brand" href="./app.html">
           <img src="./css/logo_m.png" alt="ZapłaćNaCzas" />
         </a>
-        <nav class="nav">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Otwórz menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav class="nav" id="primary-nav">
           <a href="./app.html">Dashboard</a>
           <a href="./payments-new.html">Nowa płatność</a>
           <a href="./settings.html">Ustawienia</a>
@@ -52,7 +62,12 @@ const headerTemplates = {
         <a class="brand" href="./index.html">
           <img src="./css/logo_m.png" alt="ZapłaćNaCzas" />
         </a>
-        <nav class="nav">
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Otwórz menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+        <nav class="nav" id="primary-nav">
           <a href="./index.html">Strona główna</a>
           <a href="./login.html">Logowanie</a>
           <a href="./signup.html">Rejestracja</a>
@@ -157,3 +172,23 @@ if (footerSlot) {
     footerSlot.outerHTML = footerTemplate;
   }
 }
+
+document.querySelectorAll(".nav-toggle").forEach((toggle) => {
+  const header = toggle.closest(".site-header");
+  const nav = header?.querySelector(".nav");
+  if (!nav) return;
+
+  toggle.addEventListener("click", () => {
+    const isOpen = nav.classList.toggle("is-open");
+    header?.classList.toggle("nav-open", isOpen);
+    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  });
+
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      nav.classList.remove("is-open");
+      header?.classList.remove("nav-open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+  });
+});
