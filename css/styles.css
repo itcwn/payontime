@@ -958,3 +958,71 @@ main {
     text-align: center;
   }
 }
+
+@media (max-width: 767px) {
+  body {
+    background-attachment: scroll;
+  }
+
+  .container {
+    padding: 16px;
+  }
+
+  .site-header {
+    height: auto;
+    padding: 12px 16px;
+  }
+
+  .site-header .page-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .brand img {
+    width: 150px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .hero {
+    padding: 24px;
+  }
+
+  .page-header-actions {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .page-header-actions .button {
+    width: 100%;
+  }
+
+  .tabs {
+    gap: 8px;
+  }
+
+  .tab-button {
+    flex: 1 1 140px;
+    justify-content: center;
+  }
+
+  .tab-toolbar {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .switch-right {
+    justify-content: space-between;
+  }
+
+  .table {
+    font-size: 0.85rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 6px;
+  }
+}
