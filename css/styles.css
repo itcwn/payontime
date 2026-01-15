@@ -29,6 +29,7 @@ body {
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
   display: flex;
@@ -431,7 +432,7 @@ main {
 
 .button-primary {
   background: var(--primary);
-  color: #ffffff;
+  color: #1f2937;
 }
 
 .button-primary:hover {
@@ -770,6 +771,7 @@ main {
   color: #64748b;
   font-size: 0.65rem;
   font-weight: 700;
+  font-style: italic;
   background: #ffffff;
 }
 

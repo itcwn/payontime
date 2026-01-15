@@ -20,7 +20,7 @@
             <div class="label-with-tooltip muted">
               <span>Aktywacja</span>
               <span class="tooltip" tabindex="0">
-                <span class="tooltip-icon" aria-hidden="true">I</span>
+                <span class="tooltip-icon" aria-hidden="true">i</span>
                 <span class="tooltip-content" role="tooltip">
                   Domyślnie każda nowa płatność jest aktywna. Wyłączenie aktywności spowoduje, że nie pojawi się ona w powiadomieniach.
                 </span>
@@ -39,7 +39,7 @@
               <span class="label-with-tooltip">
                 <span>Płatność za</span>
                 <span class="tooltip" tabindex="0">
-                  <span class="tooltip-icon" aria-hidden="true">I</span>
+                  <span class="tooltip-icon" aria-hidden="true">i</span>
                   <span class="tooltip-content" role="tooltip">Nie widzisz swojej płatności? Wybierz „Dodaj własną”.</span>
                 </span>
               </span>
@@ -60,7 +60,7 @@
               <span class="label-with-tooltip">
                 <span>Opis płatności</span>
                 <span class="tooltip" tabindex="0">
-                  <span class="tooltip-icon" aria-hidden="true">I</span>
+                  <span class="tooltip-icon" aria-hidden="true">i</span>
                   <span class="tooltip-content" role="tooltip">Jeśli potrzebujesz własnego opisu, wpisz go w polu nazwy.</span>
                 </span>
               </span>
@@ -74,7 +74,7 @@
               <span class="label-with-tooltip">
                 <span>Adres do systemu / dostawcy (opcjonalnie)</span>
                 <span class="tooltip" tabindex="0">
-                  <span class="tooltip-icon" aria-hidden="true">I</span>
+                  <span class="tooltip-icon" aria-hidden="true">i</span>
                   <span class="tooltip-content" role="tooltip">Jeśli potrzebujesz własnego opisu, wpisz go w polu nazwy.</span>
                 </span>
               </span>
@@ -104,7 +104,7 @@
                   <span class="label-with-tooltip">
                     <span>Start cyklu rozliczeniowego</span>
                     <span class="tooltip" tabindex="0">
-                      <span class="tooltip-icon" aria-hidden="true">I</span>
+                      <span class="tooltip-icon" aria-hidden="true">i</span>
                       <span class="tooltip-content" role="tooltip">
                         Ustala pierwszy miesiąc cyklu (np. przy płatności co 2 miesiące).
                       </span>
@@ -129,7 +129,7 @@
                     <label class="field-label label-with-tooltip" for="day-of-month">
                       <span>Dzień płatności w cyklu rozliczeniowym</span>
                       <span class="tooltip" tabindex="0">
-                        <span class="tooltip-icon" aria-hidden="true">I</span>
+                        <span class="tooltip-icon" aria-hidden="true">i</span>
                         <span class="tooltip-content" role="tooltip">
                           Jeśli miesiąc ma mniej dni, termin przesuwa się na ostatni dzień miesiąca.
                         </span>
@@ -144,7 +144,7 @@
                     <label class="field-label label-with-tooltip" for="month-of-year">
                       <span>Miesiąc płatności w cyklu rocznym</span>
                       <span class="tooltip" tabindex="0">
-                        <span class="tooltip-icon" aria-hidden="true">I</span>
+                        <span class="tooltip-icon" aria-hidden="true">i</span>
                         <span class="tooltip-content" role="tooltip">
                           Wybierz miesiąc, w którym ma przypadać płatność roczna.
                         </span>
@@ -161,7 +161,7 @@
               <p class="label-with-tooltip">
                 <strong>Przypomnienia</strong>
                 <span class="tooltip" tabindex="0">
-                  <span class="tooltip-icon" aria-hidden="true">I</span>
+                  <span class="tooltip-icon" aria-hidden="true">i</span>
                   <span class="tooltip-content" role="tooltip">
                     Wybierz, kiedy mamy wysyłać przypomnienia o terminie płatności.
                   </span>
@@ -189,7 +189,7 @@
             <p class="label-with-tooltip">
               <strong>Ustawienia płatności</strong>
               <span class="tooltip" tabindex="0">
-                <span class="tooltip-icon" aria-hidden="true">I</span>
+                <span class="tooltip-icon" aria-hidden="true">i</span>
                 <span class="tooltip-content" role="tooltip">
                   Te ustawienia pomogą w przygotowaniu statystyk dla użytkownika.
                 </span>
@@ -209,11 +209,11 @@
 
           <p id="form-error" class="error-text"></p>
           <div class="row form-actions">
+            <button type="button" class="button button-danger button-compact" id="delete-payment">Usuń</button>
             <div class="row">
               <a class="button button-secondary" href="./app.html">Anuluj</a>
-              <button type="button" class="button button-danger" id="delete-payment">Usuń</button>
+              <button type="submit" class="button button-primary">Zapisz zmiany</button>
             </div>
-            <button type="submit" class="button button-primary">Zapisz zmiany</button>
           </div>
         </form>
       </div>
