@@ -16,19 +16,6 @@ create table if not exists public.payments (
   is_active boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  constraint payments_payment_type_check check (
-    payment_type in (
-      'czynsz',
-      'prąd',
-      'gaz',
-      'woda',
-      'ZUS',
-      'podatek od nieruchomości',
-      'ubezpieczenie od nieruchomości',
-      'OC/AC',
-      'abonament RTV'
-    )
-  ),
   constraint payments_schedule_mode_check check (schedule_mode in ('one_time', 'monthly')),
   constraint payments_one_time_check check (
     (schedule_mode = 'one_time' and due_date is not null and day_of_month is null and is_last_day = false)
