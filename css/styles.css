@@ -191,6 +191,33 @@ main {
   color: var(--primary);
 }
 
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  cursor: pointer;
+  padding: 0;
+}
+
+.nav-toggle:focus-visible {
+  outline: 2px solid var(--primary-dark);
+  outline-offset: 2px;
+}
+
+.nav-toggle-bar {
+  width: 18px;
+  height: 2px;
+  background: #334155;
+  border-radius: 999px;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -978,6 +1005,30 @@ main {
     gap: 12px;
   }
 
+  .site-header .page-header {
+    flex-wrap: wrap;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  .nav {
+    width: 100%;
+    flex-direction: column;
+    gap: 12px;
+    display: none;
+  }
+
+  .nav.is-open {
+    display: flex;
+  }
+
+  .site-header.nav-open {
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  }
+
   .brand img {
     width: 150px;
   }
@@ -1001,11 +1052,13 @@ main {
 
   .tabs {
     gap: 8px;
+    flex-direction: column;
   }
 
   .tab-button {
-    flex: 1 1 140px;
+    flex: 1 1 auto;
     justify-content: center;
+    width: 100%;
   }
 
   .tab-toolbar {
@@ -1019,10 +1072,111 @@ main {
 
   .table {
     font-size: 0.85rem;
+    border-collapse: separate;
+    border-spacing: 0 12px;
   }
 
   .table th,
   .table td {
     padding: 10px 6px;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    background: #ffffff;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+  }
+
+  .table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 1px dashed rgba(148, 163, 184, 0.4);
+  }
+
+  .table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  .table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .table-group-row {
+    margin-top: 12px;
+  }
+
+  .table-group-row td {
+    justify-content: flex-start;
+    border-bottom: none;
+  }
+
+  .table-group-row td::before {
+    content: none;
+  }
+
+  .table-empty-row td {
+    justify-content: center;
+    border-bottom: none;
+  }
+
+  .table-empty-row td::before {
+    content: none;
+  }
+
+  .table-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .payment-type-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .payment-type-controls .select,
+  .payment-type-controls .input,
+  .payment-type-controls .payment-type-search,
+  .payment-type-controls .input-icon,
+  .payment-type-controls .payment-type-search-toggle,
+  .payment-type-controls .button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .payment-type-controls .payment-type-search-toggle {
+    justify-content: center;
+  }
+
+  .payment-type-controls .input-icon {
+    flex: 1 1 auto;
+  }
+
+  .payment-type-controls .payment-type-search-toggle,
+  .payment-type-controls .button {
+    padding: 10px 12px;
+  }
+
+  .row.form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .row.form-actions > .row {
+    width: 100%;
+  }
+
+  .row.form-actions .button {
+    width: 100%;
   }
 }
