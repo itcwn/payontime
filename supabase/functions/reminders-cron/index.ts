@@ -31,6 +31,11 @@ const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const resendApiKey = Deno.env.get("RESEND_API_KEY") ?? "";
 const resendFrom = Deno.env.get("RESEND_FROM") ?? "";
 
+function logStep(step: string, details?: Record<string, unknown>) {
+  const payload = details ? ` ${JSON.stringify(details)}` : "";
+  console.log(`[reminders-cron] ${step}${payload}`);
+}
+
 function pad(value: number) {
   return value.toString().padStart(2, "0");
 }
@@ -81,6 +86,12 @@ function addMonths(year: number, month: number, increment: number) {
 }
 
 async function sendReminderEmail(to: string, subject: string, text: string) {
+  logStep("resend:request", {
+    to,
+    from: resendFrom,
+    subject,
+    hasResendApiKey: Boolean(resendApiKey)
+  });
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -97,8 +108,15 @@ async function sendReminderEmail(to: string, subject: string, text: string) {
 
   if (!response.ok) {
     const errorBody = await response.text();
+    logStep("resend:error", {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorBody
+    });
     throw new Error(errorBody || `Resend API error (${response.status})`);
   }
+
+  logStep("resend:success", { status: response.status });
 }
 
 async function fetchUserEmail(adminClient: ReturnType<typeof createClient>, userId: string) {
@@ -167,19 +185,38 @@ function computeNextDueDate(payment: PaymentRecord, fromDate = new Date(), timez
 }
 
 serve(async (request) => {
+  logStep("request:start", { method: request.method, url: request.url });
   if (request.method !== "POST") {
+    logStep("request:method_not_allowed", { method: request.method });
     return new Response("Method Not Allowed", { status: 405 });
   }
 
   if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceRoleKey) {
+    logStep("config:missing_supabase", {
+      hasSupabaseUrl: Boolean(supabaseUrl),
+      hasSupabaseAnonKey: Boolean(supabaseAnonKey),
+      hasSupabaseServiceRoleKey: Boolean(supabaseServiceRoleKey)
+    });
     return new Response("Missing Supabase environment configuration.", { status: 500 });
   }
 
   if (!resendApiKey || !resendFrom) {
+    logStep("config:missing_resend", {
+      hasResendApiKey: Boolean(resendApiKey),
+      hasResendFrom: Boolean(resendFrom)
+    });
     return new Response("Missing Resend configuration.", { status: 500 });
   }
 
+  logStep("config:loaded", {
+    hasSupabaseUrl: Boolean(supabaseUrl),
+    hasSupabaseServiceRoleKey: Boolean(supabaseServiceRoleKey),
+    hasResendApiKey: Boolean(resendApiKey),
+    resendFrom
+  });
+
   const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey);
+  logStep("supabase:client_created");
   const { data: payments, error: paymentsError } = await adminClient
     .from("payments")
     .select(
@@ -187,16 +224,22 @@ serve(async (request) => {
     );
 
   if (paymentsError) {
+    logStep("supabase:payments_error", { message: paymentsError.message });
     return new Response(paymentsError.message, { status: 500 });
   }
+
+  logStep("supabase:payments_loaded", { count: payments?.length ?? 0 });
 
   const { data: settings, error: settingsError } = await adminClient
     .from("user_settings")
     .select("user_id,timezone,email_enabled");
 
   if (settingsError) {
+    logStep("supabase:settings_error", { message: settingsError.message });
     return new Response(settingsError.message, { status: 500 });
   }
+
+  logStep("supabase:settings_loaded", { count: settings?.length ?? 0 });
 
   const settingsByUser = new Map<string, UserSettings>();
   (settings ?? []).forEach((setting: UserSettings) => {
@@ -237,6 +280,13 @@ serve(async (request) => {
       return;
     }
 
+    logStep("payment:eligible", {
+      payment_id: payment.id,
+      user_id: payment.user_id,
+      due_date: dueDate,
+      offsets: offsetsForToday
+    });
+
     const entry = grouped.get(payment.user_id) ?? {
       timezone,
       emailEnabled: userSettings?.email_enabled ?? true,
@@ -273,16 +323,25 @@ serve(async (request) => {
     };
   });
 
+  logStep("users:prepared", { count: users.length });
+
   const results: Array<{ user_id: string; email: string | null; status: string; error?: string }> = [];
 
   for (const user of users) {
+    logStep("user:processing", {
+      user_id: user.user_id,
+      email_enabled: user.email_enabled,
+      items: user.items.length
+    });
     if (!user.email_enabled) {
+      logStep("user:skip_email_disabled", { user_id: user.user_id });
       results.push({ user_id: user.user_id, email: null, status: "skipped_email_disabled" });
       continue;
     }
 
     const email = await fetchUserEmail(adminClient, user.user_id);
     if (!email) {
+      logStep("user:skip_missing_email", { user_id: user.user_id });
       results.push({ user_id: user.user_id, email: null, status: "skipped_missing_email" });
       continue;
     }
@@ -290,6 +349,7 @@ serve(async (request) => {
     try {
       await sendReminderEmail(email, "Przypomnienia o płatnościach", user.message);
       results.push({ user_id: user.user_id, email, status: "sent" });
+      logStep("user:email_sent", { user_id: user.user_id, email });
 
       const now = new Date().toISOString();
       const logs = user.raw_items.flatMap(({ payment, dueDate, offsets }) =>
@@ -306,6 +366,7 @@ serve(async (request) => {
       );
 
       if (logs.length > 0) {
+        logStep("notification_log:upsert_sent", { user_id: user.user_id, count: logs.length });
         await adminClient
           .from("notification_log")
           .upsert(logs, { onConflict: "user_id,payment_id,due_date,offset_days,channel" });
@@ -315,6 +376,11 @@ serve(async (request) => {
         user_id: user.user_id,
         email,
         status: "failed",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+      logStep("user:email_failed", {
+        user_id: user.user_id,
+        email,
         error: error instanceof Error ? error.message : "Unknown error"
       });
 
@@ -334,6 +400,7 @@ serve(async (request) => {
       );
 
       if (logs.length > 0) {
+        logStep("notification_log:upsert_failed", { user_id: user.user_id, count: logs.length });
         await adminClient
           .from("notification_log")
           .upsert(logs, { onConflict: "user_id,payment_id,due_date,offset_days,channel" });
@@ -342,6 +409,8 @@ serve(async (request) => {
   }
 
   const responseUsers = users.map(({ raw_items, ...rest }) => rest);
+
+  logStep("request:complete", { users: responseUsers.length, results: results.length });
 
   return new Response(JSON.stringify({ users: responseUsers, results }), {
     status: 200,
