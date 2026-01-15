@@ -97,16 +97,20 @@ function renderGroupedTable(target, items) {
   const groupedItems = new Map();
   items.forEach((item) => {
     const groupName = item.payment.payment_type ?? "Inne";
-    if (!groupedItems.has(groupName)) {
-      groupedItems.set(groupName, []);
+    const paymentId = item.payment.id ?? "—";
+    const groupKey = `${groupName}::${paymentId}`;
+    const groupLabel = `${groupName} · ID: ${paymentId}`;
+    if (!groupedItems.has(groupKey)) {
+      groupedItems.set(groupKey, { label: groupLabel, items: [] });
     }
-    groupedItems.get(groupName).push(item);
+    groupedItems.get(groupKey).items.push(item);
   });
 
-  groupedItems.forEach((groupItems, groupName) => {
+  groupedItems.forEach((groupData) => {
+    const { label, items: groupItems } = groupData;
     const groupRow = document.createElement("tr");
     groupRow.className = "table-group-row";
-    groupRow.innerHTML = `<td colspan="7">${groupName} <span class="muted">(${groupItems.length})</span></td>`;
+    groupRow.innerHTML = `<td colspan="7">${label} <span class="muted">(${groupItems.length})</span></td>`;
     target.appendChild(groupRow);
     groupItems.forEach((item) => {
       target.appendChild(buildPaymentRow(item));
