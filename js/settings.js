@@ -12,6 +12,7 @@ const errorEl = document.getElementById("settings-error");
 const successEl = document.getElementById("settings-success");
 const logoutButton = document.getElementById("logout-button");
 const userEmail = document.getElementById("user-email");
+const settingsUserEmail = document.getElementById("settings-user-email");
 const displayNameInput = document.getElementById("display-name");
 const planFreeInput = document.getElementById("plan-free");
 const planPremiumInput = document.getElementById("plan-premium");
@@ -66,8 +67,14 @@ function updatePremiumStatus({ planTier, premiumExpiresAt }) {
 async function loadSettings() {
   const session = await requireSession();
   const user = session?.user ?? (await getUser());
-  if (userEmail && user) {
-    userEmail.textContent = getUserLabel(user);
+  if (user) {
+    const userLabel = getUserLabel(user);
+    if (userEmail) {
+      userEmail.textContent = userLabel;
+    }
+    if (settingsUserEmail) {
+      settingsUserEmail.textContent = userLabel;
+    }
   }
 
   if (displayNameInput && user) {

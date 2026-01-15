@@ -337,6 +337,27 @@ main {
   display: none;
 }
 
+.tabs-header {
+  position: relative;
+}
+
+#all-tab-toolbar {
+  position: absolute;
+  top: 30px;
+  right: 0;
+}
+
+#all-tab-toolbar .switch {
+  width: 100%;
+  justify-content: flex-end;
+}
+
+#all-tab-toolbar .switch-text {
+  flex: 1;
+  text-align: right;
+  margin-right: 12px;
+}
+
 .table-group-row td {
   background: #f8fafc;
   font-weight: 600;
