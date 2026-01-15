@@ -108,7 +108,8 @@ const footerTemplates = {
             <li><a href="./payments-new.html">Nowa płatność</a></li>
             <li><a href="./report-bug.html">Zgłoś błąd</a></li>
             <li><a href="./report-idea.html">Zgłoś pomysł</a></li>
-            <li><a href="./legal.html">Regulamin</a></li>
+            <li><a href="./regulamin.html">Regulamin</a></li>
+            <li><a href="./polityka-prywatnosci.html">Polityka prywatności</a></li>
           </ul>
         </div>
       </div>
@@ -146,7 +147,8 @@ const footerTemplates = {
             <li><a href="./signup.html">Rejestracja</a></li>
             <li><a href="./report-bug.html">Zgłoś błąd</a></li>
             <li><a href="./report-idea.html">Zgłoś pomysł</a></li>
-            <li><a href="./legal.html">Regulamin</a></li>
+            <li><a href="./regulamin.html">Regulamin</a></li>
+            <li><a href="./polityka-prywatnosci.html">Polityka prywatności</a></li>
           </ul>
         </div>
       </div>
