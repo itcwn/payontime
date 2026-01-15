@@ -24,6 +24,7 @@ const allTabToolbar = document.getElementById("all-tab-toolbar");
 const monthlyTotalEl = document.getElementById("monthly-total");
 const monthlyTotalMeta = document.getElementById("monthly-total-meta");
 let allItemsSorted = [];
+const groupedState = new Map();
 
 function setActiveTab(tabName) {
   tabButtons.forEach((button) => {
@@ -84,6 +85,23 @@ function buildPaymentRow(item) {
   return row;
 }
 
+function setGroupExpanded(target, groupKey, isExpanded) {
+  groupedState.set(groupKey, isExpanded);
+  const rows = Array.from(target.querySelectorAll("tr[data-group]")).filter(
+    (row) => row.dataset.group === groupKey
+  );
+  rows.forEach((row, index) => {
+    if (index === 0) return;
+    row.classList.toggle("is-collapsed", !isExpanded);
+  });
+}
+
+function updateGroupToggle(toggleButton, isExpanded) {
+  toggleButton.setAttribute("aria-expanded", String(isExpanded));
+  toggleButton.setAttribute("aria-label", isExpanded ? "Zwiń pozycje" : "Rozwiń pozycje");
+  toggleButton.innerHTML = `<span class="group-toggle-icon">${isExpanded ? "−" : "+"}</span>`;
+}
+
 function renderGroupedTable(target, items) {
   target.innerHTML = "";
   if (items.length === 0) {
@@ -106,14 +124,32 @@ function renderGroupedTable(target, items) {
     groupedItems.get(groupKey).items.push(item);
   });
 
-  groupedItems.forEach((groupData) => {
-    const { label, items: groupItems } = groupData;
-    const groupRow = document.createElement("tr");
-    groupRow.className = "table-group-row";
-    groupRow.innerHTML = `<td colspan="7">${label} <span class="muted">(${groupItems.length})</span></td>`;
-    target.appendChild(groupRow);
-    groupItems.forEach((item) => {
-      target.appendChild(buildPaymentRow(item));
+  groupedItems.forEach((groupData, groupKey) => {
+    const { items: groupItems } = groupData;
+    const isExpanded = groupedState.get(groupKey) ?? true;
+    groupItems.forEach((item, index) => {
+      const row = buildPaymentRow(item);
+      row.dataset.group = groupKey;
+      row.classList.add("table-group-item");
+      if (index > 0 && !isExpanded) {
+        row.classList.add("is-collapsed");
+      }
+      if (index === 0 && groupItems.length > 1) {
+        const toggleButton = document.createElement("button");
+        toggleButton.type = "button";
+        toggleButton.className = "group-toggle";
+        updateGroupToggle(toggleButton, isExpanded);
+        toggleButton.addEventListener("click", () => {
+          const nextState = !(groupedState.get(groupKey) ?? true);
+          setGroupExpanded(target, groupKey, nextState);
+          updateGroupToggle(toggleButton, nextState);
+        });
+        const firstCell = row.querySelector("td");
+        if (firstCell) {
+          firstCell.prepend(toggleButton);
+        }
+      }
+      target.appendChild(row);
     });
   });
 }
