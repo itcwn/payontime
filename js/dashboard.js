@@ -99,7 +99,7 @@ function renderGroupedTable(target, items) {
     const groupName = item.payment.payment_type ?? "Inne";
     const paymentId = item.payment.id ?? "—";
     const groupKey = `${groupName}::${paymentId}`;
-    const groupLabel = `${groupName} · ID: ${paymentId}`;
+    const groupLabel = groupName;
     if (!groupedItems.has(groupKey)) {
       groupedItems.set(groupKey, { label: groupLabel, items: [] });
     }
