@@ -21,12 +21,15 @@ type PaymentRecord = {
 type UserSettings = {
   user_id: string;
   timezone: string;
+  email_enabled: boolean;
 };
 
 const defaultTimezone = "Europe/Warsaw";
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
 const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+const resendApiKey = Deno.env.get("RESEND_API_KEY") ?? "";
+const resendFrom = Deno.env.get("RESEND_FROM") ?? "";
 
 function pad(value: number) {
   return value.toString().padStart(2, "0");
@@ -75,6 +78,35 @@ function addMonths(year: number, month: number, increment: number) {
   const nextYear = year + Math.floor(totalMonths / 12);
   const nextMonth = (totalMonths % 12) + 1;
   return { year: nextYear, month: nextMonth };
+}
+
+async function sendReminderEmail(to: string, subject: string, text: string) {
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${resendApiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      from: resendFrom,
+      to,
+      subject,
+      text
+    })
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(errorBody || `Resend API error (${response.status})`);
+  }
+}
+
+async function fetchUserEmail(adminClient: ReturnType<typeof createClient>, userId: string) {
+  const { data, error } = await adminClient.auth.admin.getUserById(userId);
+  if (error) {
+    return null;
+  }
+  return data.user?.email ?? null;
 }
 
 function getIntervalConfig(payment: PaymentRecord) {
@@ -143,6 +175,10 @@ serve(async (request) => {
     return new Response("Missing Supabase environment configuration.", { status: 500 });
   }
 
+  if (!resendApiKey || !resendFrom) {
+    return new Response("Missing Resend configuration.", { status: 500 });
+  }
+
   const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey);
   const { data: payments, error: paymentsError } = await adminClient
     .from("payments")
@@ -156,18 +192,25 @@ serve(async (request) => {
 
   const { data: settings, error: settingsError } = await adminClient
     .from("user_settings")
-    .select("user_id,timezone");
+    .select("user_id,timezone,email_enabled");
 
   if (settingsError) {
     return new Response(settingsError.message, { status: 500 });
   }
 
-  const timezoneByUser = new Map<string, string>();
+  const settingsByUser = new Map<string, UserSettings>();
   (settings ?? []).forEach((setting: UserSettings) => {
-    timezoneByUser.set(setting.user_id, setting.timezone);
+    settingsByUser.set(setting.user_id, setting);
   });
 
-  const grouped = new Map<string, { timezone: string; items: PaymentRecord[] }>();
+  const grouped = new Map<
+    string,
+    {
+      timezone: string;
+      emailEnabled: boolean;
+      items: Array<{ payment: PaymentRecord; dueDate: string; offsets: number[] }>;
+    }
+  >();
   const today = new Date();
 
   (payments ?? []).forEach((payment: PaymentRecord) => {
@@ -175,7 +218,8 @@ serve(async (request) => {
       return;
     }
 
-    const timezone = timezoneByUser.get(payment.user_id) ?? defaultTimezone;
+    const userSettings = settingsByUser.get(payment.user_id);
+    const timezone = userSettings?.timezone ?? defaultTimezone;
     const dueDate = computeNextDueDate(payment, today, timezone);
     if (!dueDate) {
       return;
@@ -184,25 +228,29 @@ serve(async (request) => {
     const offsets = payment.remind_offsets ?? [];
     const todayString = formatDateString(today, timezone);
     const dueDateObj = new Date(`${dueDate}T00:00:00`);
-    const shouldNotify = offsets.some((offset) => {
+    const offsetsForToday = offsets.filter((offset) => {
       const reminderDate = addDays(dueDateObj, offset);
       return formatDateString(reminderDate, timezone) === todayString;
     });
 
-    if (!shouldNotify) {
+    if (offsetsForToday.length === 0) {
       return;
     }
 
-    const entry = grouped.get(payment.user_id) ?? { timezone, items: [] };
-    entry.items.push(payment);
+    const entry = grouped.get(payment.user_id) ?? {
+      timezone,
+      emailEnabled: userSettings?.email_enabled ?? true,
+      items: []
+    };
+    entry.items.push({ payment, dueDate, offsets: offsetsForToday });
     grouped.set(payment.user_id, entry);
   });
 
   const users = Array.from(grouped.entries()).map(([userId, entry]) => {
-    const items = entry.items.map((payment) => ({
+    const items = entry.items.map(({ payment, dueDate }) => ({
       name: payment.name ?? payment.payment_type,
       payment_type: payment.payment_type,
-      due_date: computeNextDueDate(payment, today, entry.timezone),
+      due_date: dueDate,
       provider_address: payment.provider_address
     }));
 
@@ -218,12 +266,84 @@ serve(async (request) => {
     return {
       user_id: userId,
       timezone: entry.timezone,
+      email_enabled: entry.emailEnabled,
+      raw_items: entry.items,
       items,
       message: messageLines.join("\n")
     };
   });
 
-  return new Response(JSON.stringify({ users }), {
+  const results: Array<{ user_id: string; email: string | null; status: string; error?: string }> = [];
+
+  for (const user of users) {
+    if (!user.email_enabled) {
+      results.push({ user_id: user.user_id, email: null, status: "skipped_email_disabled" });
+      continue;
+    }
+
+    const email = await fetchUserEmail(adminClient, user.user_id);
+    if (!email) {
+      results.push({ user_id: user.user_id, email: null, status: "skipped_missing_email" });
+      continue;
+    }
+
+    try {
+      await sendReminderEmail(email, "Przypomnienia o płatnościach", user.message);
+      results.push({ user_id: user.user_id, email, status: "sent" });
+
+      const now = new Date().toISOString();
+      const logs = user.raw_items.flatMap(({ payment, dueDate, offsets }) =>
+        offsets.map((offset) => ({
+          user_id: user.user_id,
+          payment_id: payment.id,
+          due_date: dueDate,
+          offset_days: offset,
+          channel: "email",
+          scheduled_for: now,
+          sent_at: now,
+          status: "sent"
+        }))
+      );
+
+      if (logs.length > 0) {
+        await adminClient
+          .from("notification_log")
+          .upsert(logs, { onConflict: "user_id,payment_id,due_date,offset_days,channel" });
+      }
+    } catch (error) {
+      results.push({
+        user_id: user.user_id,
+        email,
+        status: "failed",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+
+      const now = new Date().toISOString();
+      const logs = user.raw_items.flatMap(({ payment, dueDate, offsets }) =>
+        offsets.map((offset) => ({
+          user_id: user.user_id,
+          payment_id: payment.id,
+          due_date: dueDate,
+          offset_days: offset,
+          channel: "email",
+          scheduled_for: now,
+          sent_at: null,
+          status: "failed",
+          error: error instanceof Error ? error.message : "Unknown error"
+        }))
+      );
+
+      if (logs.length > 0) {
+        await adminClient
+          .from("notification_log")
+          .upsert(logs, { onConflict: "user_id,payment_id,due_date,offset_days,channel" });
+      }
+    }
+  }
+
+  const responseUsers = users.map(({ raw_items, ...rest }) => rest);
+
+  return new Response(JSON.stringify({ users: responseUsers, results }), {
     status: 200,
     headers: { "Content-Type": "application/json" }
   });

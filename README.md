@@ -44,3 +44,7 @@ Wersja statyczna nie zawiera serwerowego CRON-a. Jeśli chcesz wysyłać emailow
 - klucza `SUPABASE_SERVICE_ROLE_KEY` tylko po stronie serwera.
 
 Frontend nie powinien przechowywać klucza service role.
+
+Dla wysyłki emaili przez Resend skonfiguruj w środowisku Edge Function zmienne:
+- `RESEND_API_KEY`
+- `RESEND_FROM` (np. `ZapłaćNaCzas <no-reply@twojadomena.pl>`)
