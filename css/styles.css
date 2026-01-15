@@ -534,6 +534,32 @@ main {
   gap: 16px;
 }
 
+.checkbox-field {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.checkbox-field input {
+  margin-top: 3px;
+  accent-color: var(--primary);
+}
+
+.checkbox-field a {
+  color: var(--primary);
+}
+
+.checkbox-field a:hover {
+  color: var(--primary-dark);
+}
+
+.checkbox-field a:focus-visible {
+  outline: 2px solid var(--primary-dark);
+  outline-offset: 2px;
+}
+
 .row {
   display: flex;
   flex-wrap: wrap;
