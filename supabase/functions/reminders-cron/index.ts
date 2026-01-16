@@ -30,6 +30,7 @@ const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const resendApiKey = Deno.env.get("RESEND_API_KEY") ?? "";
 const resendFrom = Deno.env.get("RESEND_FROM") ?? "";
+const cronSecret = Deno.env.get("CRON_SECRET") ?? "";
 
 function logStep(step: string, details?: Record<string, unknown>) {
   const payload = details ? ` ${JSON.stringify(details)}` : "";
@@ -288,6 +289,14 @@ serve(async (request) => {
   if (request.method !== "POST") {
     logStep("request:method_not_allowed", { method: request.method });
     return new Response("Method Not Allowed", { status: 405 });
+  }
+
+  if (cronSecret) {
+    const providedSecret = request.headers.get("x-cron-secret");
+    if (!providedSecret || providedSecret !== cronSecret) {
+      logStep("request:unauthorized", { hasSecret: Boolean(providedSecret) });
+      return new Response("Unauthorized", { status: 401 });
+    }
   }
 
   if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceRoleKey) {
