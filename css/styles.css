@@ -91,6 +91,15 @@ main {
   height: 80px;
 }
 
+.page-header-hero h1,
+.page-header-hero h4 {
+  margin: 0;
+}
+
+.page-header-hero h1 + h4 {
+  margin-top: 14px;
+}
+
 .site-header {
   border-radius: 0;
   box-shadow: none;
