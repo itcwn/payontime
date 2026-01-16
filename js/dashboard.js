@@ -2,6 +2,7 @@ import { requireSession, signOut, getUser, getUserLabel } from "./auth.js";
 import {
   buildDashboardSections,
   fetchPayments,
+  getNearestReminderDate,
   renderTable
 } from "./payments.js";
 
@@ -62,15 +63,21 @@ function sortAllItems(items) {
 }
 
 function buildPaymentRow(item) {
+  const nearestReminder = getNearestReminderDate(item);
+  const providerLink = item.payment.provider_address
+    ? `<a class="link" href="${item.payment.provider_address}" target="_blank" rel="noopener noreferrer" aria-label="Przejdź do serwisu płatności">↗️</a>`
+    : `<span class="muted" aria-hidden="true">—</span>`;
   const row = document.createElement("tr");
   row.innerHTML = `
-      <td data-label="Typ"><strong>${item.payment.payment_type}</strong></td>
-      <td data-label="Nazwa">${item.payment.name ?? "—"}</td>
+      <td data-label="Płatność za">
+        <strong>${item.payment.payment_type}</strong>
+        <span class="table-subtext">${item.payment.name ?? "—"}</span>
+      </td>
       <td data-label="Kwota">${item.payment.amount ? `${item.payment.amount} ${item.payment.currency}` : "—"}</td>
-      <td data-label="Następny termin">${item.dueDate ?? "Brak"}
+      <td data-label="Najbliższe powiadomienie">${nearestReminder}</td>
+      <td data-label="Najbliższy termin">${item.dueDate ?? "Brak"}
         ${item.isOverdue ? '<span class="badge badge-danger">po terminie</span>' : ""}
       </td>
-      <td data-label="Adres dostawcy">${item.payment.provider_address || "—"}</td>
       <td data-label="Status">
         ${item.payment.is_active
           ? '<span class="badge badge-success">aktywna</span>'
@@ -78,6 +85,7 @@ function buildPaymentRow(item) {
       </td>
       <td data-label="Akcje">
         <div class="table-actions">
+          ${providerLink}
           <a class="link" href="./payments-edit.html?id=${item.payment.id}" aria-label="Edytuj płatność">✏️</a>
         </div>
       </td>
@@ -107,7 +115,7 @@ function renderGroupedTable(target, items) {
   if (items.length === 0) {
     const emptyRow = document.createElement("tr");
     emptyRow.className = "table-empty-row";
-    emptyRow.innerHTML = '<td colspan="7">Brak płatności</td>';
+    emptyRow.innerHTML = '<td colspan="6">Brak płatności</td>';
     target.appendChild(emptyRow);
     return;
   }

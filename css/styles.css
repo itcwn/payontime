@@ -652,7 +652,7 @@ main {
 .tab-button.is-active {
   background: var(--primary);
   border-color: var(--primary);
-  color: #ffffff;
+  color: #000000;
 }
 
 .tab-count {
@@ -686,6 +686,13 @@ main {
   padding: 12px 8px;
   border-bottom: 1px solid var(--border);
   text-align: left;
+}
+
+.table-subtext {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 4px;
 }
 
 .table th {
@@ -742,6 +749,11 @@ main {
   border-radius: 10px;
   border: 1px solid var(--border);
   font-size: 0.95rem;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--primary);
 }
 
 .payment-type-controls {
@@ -965,6 +977,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 12px;
 }
 
 .pagination {
