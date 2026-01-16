@@ -85,7 +85,105 @@ function addMonths(year: number, month: number, increment: number) {
   return { year: nextYear, month: nextMonth };
 }
 
-async function sendReminderEmail(to: string, subject: string, text: string) {
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function buildReminderEmailText(items: Array<{ name: string; due_date: string | null; provider_address: string | null }>) {
+  const messageLines = [
+    "Cześć, tu ZapłaćNaCzas!",
+    "Oto Twoje zbliżające się płatności:",
+    ...items.map(
+      (item) =>
+        `- ${item.name} | Termin płatności: ${item.due_date ?? "—"} | ${item.provider_address ?? "Brak linku"}`
+    ),
+    "",
+    "Twój asystent ZapłaćNaCzas"
+  ];
+
+  return messageLines.join("\n");
+}
+
+function buildReminderEmailHtml(items: Array<{ name: string; due_date: string | null; provider_address: string | null }>) {
+  const rows = items
+    .map((item) => {
+      const name = escapeHtml(item.name);
+      const dueDate = escapeHtml(item.due_date ?? "—");
+      const provider = item.provider_address
+        ? `<a href="${escapeHtml(item.provider_address)}" style="color:#2563eb;text-decoration:none;">${escapeHtml(
+            item.provider_address
+          )}</a>`
+        : `<span style="color:#9ca3af;">Brak linku</span>`;
+      return `
+        <tr>
+          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;">${name}</td>
+          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;">${dueDate}</td>
+          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;">${provider}</td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  return `
+  <div style="background:#f8fafc;padding:24px 12px;font-family:Inter,Arial,sans-serif;color:#0f172a;">
+    <div style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
+      <div style="padding:24px;border-bottom:1px solid #e2e8f0;">
+        <img src="https://itcwn.github.io/payontime/css/logo_m.png" alt="ZapłaćNaCzas" style="height:36px;width:auto;display:block;" />
+      </div>
+      <div style="padding:24px 24px 8px;">
+        <h2 style="margin:0 0 8px;font-size:20px;">Cześć, tu ZapłaćNaCzas!</h2>
+        <p style="margin:0 0 16px;color:#475569;">Oto Twoje zbliżające się płatności:</p>
+      </div>
+      <div style="padding:0 24px 24px;">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead>
+            <tr>
+              <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;">
+                Nazwa
+              </th>
+              <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;">
+                Termin
+              </th>
+              <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;">
+                Dostawca
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:20px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;">
+          <div style="min-width:200px;">
+            <img src="https://itcwn.github.io/payontime/css/logo_m.png" alt="ZapłaćNaCzas" style="height:28px;width:auto;display:block;margin-bottom:8px;" />
+            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">
+              ZapłaćNaCzas sp. z o.o.<br />
+              ul. Przykładowa 12, 00-001 Warszawa
+            </p>
+          </div>
+          <div style="min-width:160px;">
+            <p style="margin:0 0 6px;font-weight:600;">Kontakt</p>
+            <p style="margin:0;color:#475569;font-size:13px;">
+              <a href="mailto:kontakt@zaplacnaczas.pl" style="color:#2563eb;text-decoration:none;">kontakt@zaplacnaczas.pl</a><br />
+              +48 123 456 789
+            </p>
+          </div>
+        </div>
+        <p style="margin:16px 0 0;font-size:13px;color:#64748b;">Twój asystent ZapłaćNaCzas</p>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+async function sendReminderEmail(to: string, subject: string, text: string, html: string) {
   logStep("resend:request", {
     to,
     from: resendFrom,
@@ -102,7 +200,8 @@ async function sendReminderEmail(to: string, subject: string, text: string) {
       from: resendFrom,
       to,
       subject,
-      text
+      text,
+      html
     })
   });
 
@@ -304,22 +403,14 @@ serve(async (request) => {
       provider_address: payment.provider_address
     }));
 
-    const messageLines = [
-      "Cześć, tu ZapłaćNaCzas!",
-      "Oto Twoje zbliżające się płatności:",
-      ...items.map(
-        (item) =>
-          `- ${item.name} | Termin płatności: ${item.due_date ?? "—"} | ${item.provider_address ?? "Brak linku"}`
-      )
-    ];
-
     return {
       user_id: userId,
       timezone: entry.timezone,
       email_enabled: entry.emailEnabled,
       raw_items: entry.items,
       items,
-      message: messageLines.join("\n")
+      message: buildReminderEmailText(items),
+      html_message: buildReminderEmailHtml(items)
     };
   });
 
@@ -347,7 +438,7 @@ serve(async (request) => {
     }
 
     try {
-      await sendReminderEmail(email, "Przypomnienia o płatnościach", user.message);
+      await sendReminderEmail(email, "Przypomnienia o płatnościach", user.message, user.html_message);
       results.push({ user_id: user.user_id, email, status: "sent" });
       logStep("user:email_sent", { user_id: user.user_id, email });
 
