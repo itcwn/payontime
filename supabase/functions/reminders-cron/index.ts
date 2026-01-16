@@ -468,7 +468,7 @@ serve(async (request) => {
 
     const { data: queuedLogs, error: queueError } = await adminClient
       .from("notification_log")
-      .insert(logCandidates, {
+      .upsert(logCandidates, {
         onConflict: "user_id,payment_id,due_date,offset_days,channel",
         ignoreDuplicates: true
       })
