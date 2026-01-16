@@ -437,13 +437,13 @@ main {
 }
 
 .site-footer {
-  background: linear-gradient(to bottom, rgba(15, 23, 42, 0) 0%, #0f172a 10%), #0f172a;
-  color: #e2e8f0;
+  background: #ffffff;
+  color: #0f172a;
   margin-top: 32px;
 }
 
 .site-footer .muted {
-  color: rgba(226, 232, 240, 0.7);
+  color: rgba(15, 23, 42, 0.65);
 }
 
 .footer-content {
@@ -460,7 +460,7 @@ main {
 .footer-section h3 {
   margin: 0 0 12px;
   font-size: 1rem;
-  color: #f8fafc;
+  color: #0f172a;
 }
 
 .footer-links-list {
@@ -469,7 +469,7 @@ main {
   margin: 0;
   display: grid;
   gap: 8px;
-  color: #cbd5f5;
+  color: #334155;
   font-size: 0.9rem;
 }
 
@@ -478,15 +478,15 @@ main {
 }
 
 .footer-links-list a:hover {
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  border-top: 1px solid rgba(15, 23, 42, 0.15);
   padding: 16px 24px 24px;
   text-align: center;
   font-size: 0.85rem;
-  color: rgba(226, 232, 240, 0.7);
+  color: rgba(15, 23, 42, 0.6);
 }
 
 .button {

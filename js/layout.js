@@ -82,7 +82,7 @@ const footerTemplates = {
     <footer class="site-footer">
       <div class="container footer-content">
         <div class="footer-brand">
-          <img src="./css/logo_m.png" alt="ZapłaćNaCzas" />
+          <img src="./css/logo_m_black.jpg" alt="ZapłaćNaCzas" />
           <p class="muted">
             ZapłaćNaCzas sp. z o.o.<br />
             ul. Przykładowa 12, 00-001 Warszawa
@@ -117,7 +117,7 @@ const footerTemplates = {
     <footer class="site-footer">
       <div class="container footer-content">
         <div class="footer-brand">
-          <img src="./css/logo_m.png" alt="ZapłaćNaCzas" />
+          <img src="./css/logo_m_black.jpg" alt="ZapłaćNaCzas" />
           <p class="muted">
             ZapłaćNaCzas sp. z o.o.<br />
             ul. Przykładowa 12, 00-001 Warszawa
