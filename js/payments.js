@@ -1,6 +1,39 @@
 import { supabase } from "./supabase-client.js";
 import { computeNextDueDate, formatDateString, listDueItems } from "./dates.js";
 
+function dateStringToNumber(dateString) {
+  return Number(dateString.replaceAll("-", ""));
+}
+
+export function getNearestReminderDate(item, referenceDate = new Date()) {
+  if (!item?.dueDate) {
+    return "—";
+  }
+  const remindOffsets = item.payment?.remind_offsets;
+  if (!Array.isArray(remindOffsets) || remindOffsets.length === 0) {
+    return "—";
+  }
+
+  const dueDateBase = new Date(`${item.dueDate}T00:00:00Z`);
+  const reminderDates = remindOffsets.map((offset) => {
+    const date = new Date(dueDateBase);
+    date.setUTCDate(date.getUTCDate() + Number(offset));
+    const formatted = formatDateString(date);
+    return { date: formatted, number: dateStringToNumber(formatted) };
+  });
+
+  const todayNumber = dateStringToNumber(formatDateString(referenceDate));
+  const upcoming = reminderDates
+    .filter((reminder) => reminder.number >= todayNumber)
+    .sort((a, b) => a.number - b.number);
+  if (upcoming.length > 0) {
+    return upcoming[0].date;
+  }
+
+  const past = reminderDates.sort((a, b) => a.number - b.number);
+  return past.length > 0 ? past[past.length - 1].date : "—";
+}
+
 export const paymentTypes = [
   "Podatek od nieruchomości",
   "Podatek od gruntu",
@@ -133,15 +166,21 @@ export function buildDashboardSections(payments) {
 export function renderTable(target, items) {
   target.innerHTML = "";
   for (const item of items) {
+    const nearestReminder = getNearestReminderDate(item);
+    const providerLink = item.payment.provider_address
+      ? `<a class="link" href="${item.payment.provider_address}" target="_blank" rel="noopener noreferrer" aria-label="Przejdź do serwisu płatności">↗️</a>`
+      : `<span class="muted" aria-hidden="true">—</span>`;
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td data-label="Typ"><strong>${item.payment.payment_type}</strong></td>
-      <td data-label="Nazwa">${item.payment.name ?? "—"}</td>
+      <td data-label="Płatność za">
+        <strong>${item.payment.payment_type}</strong>
+        <span class="table-subtext">${item.payment.name ?? "—"}</span>
+      </td>
       <td data-label="Kwota">${item.payment.amount ? `${item.payment.amount} ${item.payment.currency}` : "—"}</td>
-      <td data-label="Następny termin">${item.dueDate ?? "Brak"}
+      <td data-label="Najbliższe powiadomienie">${nearestReminder}</td>
+      <td data-label="Najbliższy termin">${item.dueDate ?? "Brak"}
         ${item.isOverdue ? '<span class="badge badge-danger">po terminie</span>' : ""}
       </td>
-      <td data-label="Adres dostawcy">${item.payment.provider_address || "—"}</td>
       <td data-label="Status">
         ${item.payment.is_active
           ? '<span class="badge badge-success">aktywna</span>'
@@ -149,6 +188,7 @@ export function renderTable(target, items) {
       </td>
       <td data-label="Akcje">
         <div class="table-actions">
+          ${providerLink}
           <a class="link" href="./payments-edit.html?id=${item.payment.id}" aria-label="Edytuj płatność">✏️</a>
         </div>
       </td>

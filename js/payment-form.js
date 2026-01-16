@@ -1,4 +1,4 @@
-import { requireSession } from "./auth.js";
+import { requireSession, getUser, getUserLabel } from "./auth.js";
 import { computeNextDueDate, formatDateString } from "./dates.js";
 import {
   createPayment,
@@ -11,6 +11,7 @@ import {
 
 const form = document.getElementById("payment-form");
 const errorEl = document.getElementById("form-error");
+const userEmail = document.getElementById("user-email");
 const scheduleRadios = document.querySelectorAll("input[name='schedule_mode']");
 const dueDateField = document.getElementById("due-date-field");
 const recurringField = document.getElementById("recurring-field");
@@ -549,6 +550,10 @@ if (deleteButton) {
 }
 
 await requireSession();
+const user = await getUser();
+if (userEmail && user) {
+  userEmail.textContent = getUserLabel(user);
+}
 if (intervalInput) {
   setIntervalOption(getSelectedIntervalOption());
   buildDayOptions();

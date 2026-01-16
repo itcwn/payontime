@@ -91,14 +91,11 @@ const footerTemplates = {
         <div class="footer-section">
           <h3>Kontakt</h3>
           <p><a href="mailto:kontakt@zaplacnaczas.pl">kontakt@zaplacnaczas.pl</a></p>
-          <p>+48 123 456 789</p>
         </div>
         <div class="footer-section">
           <h3>Social media</h3>
           <ul class="footer-links-list">
             <li><a href="https://facebook.com/zaplacnaczas">Facebook</a></li>
-            <li><a href="https://instagram.com/zaplacnaczas">Instagram</a></li>
-            <li><a href="https://linkedin.com/company/zaplacnaczas">LinkedIn</a></li>
           </ul>
         </div>
         <div class="footer-section">
@@ -129,14 +126,11 @@ const footerTemplates = {
         <div class="footer-section">
           <h3>Kontakt</h3>
           <p><a href="mailto:kontakt@zaplacnaczas.pl">kontakt@zaplacnaczas.pl</a></p>
-          <p>+48 123 456 789</p>
         </div>
         <div class="footer-section">
           <h3>Social media</h3>
           <ul class="footer-links-list">
             <li><a href="https://facebook.com/zaplacnaczas">Facebook</a></li>
-            <li><a href="https://instagram.com/zaplacnaczas">Instagram</a></li>
-            <li><a href="https://linkedin.com/company/zaplacnaczas">LinkedIn</a></li>
           </ul>
         </div>
         <div class="footer-section">
