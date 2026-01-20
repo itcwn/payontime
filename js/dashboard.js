@@ -65,7 +65,11 @@ function sortAllItems(items) {
 function buildPaymentRow(item) {
   const nearestReminder = getNearestReminderDate(item);
   const providerLink = item.payment.provider_address
-    ? `<a class="link" href="${item.payment.provider_address}" target="_blank" rel="noopener noreferrer" aria-label="Przejdź do serwisu płatności">↗️</a>`
+    ? `<a class="table-action-link table-action-link--external" href="${item.payment.provider_address}" target="_blank" rel="noopener noreferrer" aria-label="Przejdź do serwisu płatności">
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M7 7h5a1 1 0 1 0 0-2H6a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0V7zm5.293 1.293a1 1 0 0 0 0 1.414L14.586 12H10a1 1 0 1 0 0 2h4.586l-2.293 2.293a1 1 0 0 0 1.414 1.414l4-4a1 1 0 0 0 0-1.414l-4-4a1 1 0 0 0-1.414 0z" />
+        </svg>
+      </a>`
     : `<span class="muted" aria-hidden="true">—</span>`;
   const row = document.createElement("tr");
   row.innerHTML = `
@@ -86,7 +90,11 @@ function buildPaymentRow(item) {
       <td data-label="Akcje">
         <div class="table-actions">
           ${providerLink}
-          <a class="link" href="./payments-edit.html?id=${item.payment.id}" aria-label="Edytuj płatność">✏️</a>
+          <a class="table-action-link table-action-link--edit" href="./payments-edit.html?id=${item.payment.id}" aria-label="Edytuj płatność">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M16.862 3.487a2.25 2.25 0 0 1 3.182 3.182L7.06 19.653a1.5 1.5 0 0 1-.636.38l-3.323.945a.75.75 0 0 1-.927-.927l.945-3.323a1.5 1.5 0 0 1 .38-.636L16.862 3.487zm-1.06 2.121L4.78 16.63l-.53 1.86 1.86-.53L17.923 6.669a.75.75 0 0 0-1.06-1.06l-1.06-1.06z" />
+            </svg>
+          </a>
         </div>
       </td>
     `;

@@ -989,6 +989,38 @@ input[type="radio"] {
   gap: 12px;
 }
 
+.table-action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--text);
+  border: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.table-action-link svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.table-action-link--external {
+  color: var(--muted);
+}
+
+.table-action-link--edit {
+  color: var(--primary-dark);
+}
+
+.table-action-link:hover,
+.table-action-link:focus-visible {
+  color: var(--text);
+  border-color: var(--primary);
+  background: rgba(214, 214, 177, 0.2);
+}
+
 .pagination {
   display: flex;
   flex-wrap: wrap;
