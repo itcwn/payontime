@@ -619,6 +619,12 @@ main {
   color: #ffffff;
 }
 
+#day-options .choice-button.is-selected,
+#month-options .choice-button.is-selected,
+#interval-options .choice-button.is-selected {
+  color: #000000;
+}
+
 .choice-button:focus-visible {
   outline: 2px solid var(--primary-dark);
   outline-offset: 2px;
@@ -836,6 +842,11 @@ input[type="radio"] {
 
 .button-compact {
   padding: 10px 12px;
+}
+
+.button-delete {
+  padding: 8px 14px;
+  font-size: 0.8rem;
 }
 
 .input-compact {
