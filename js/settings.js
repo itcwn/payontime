@@ -21,7 +21,8 @@ const premiumStatusEl = document.getElementById("premium-status");
 const premiumExpiryEl = document.getElementById("premium-expiry");
 let currentSettings = {
   plan_tier: "free",
-  premium_expires_at: null
+  premium_expires_at: null,
+  push_enabled: false
 };
 
 function formatDate(value) {
@@ -64,7 +65,6 @@ function updatePremiumStatus({ planTier, premiumExpiresAt }) {
     premiumExpiryEl.textContent = "";
   }
 }
-let currentSettings = {};
 
 async function loadSettings() {
   const session = await requireSession();
@@ -100,13 +100,13 @@ async function loadSettings() {
 
   if (data) {
     form.querySelector("#email-enabled").checked = data.email_enabled;
-    form.querySelector("#push-enabled").checked = data.push_enabled;
     if (notificationCopyEmailInput) {
       notificationCopyEmailInput.value = data.notification_copy_email ?? "";
     }
     currentSettings = {
       plan_tier: data.plan_tier ?? "free",
-      premium_expires_at: data.premium_expires_at ?? null
+      premium_expires_at: data.premium_expires_at ?? null,
+      push_enabled: data.push_enabled ?? false
     };
     if (planFreeInput && planPremiumInput) {
       if (currentSettings.plan_tier === "premium") {
@@ -119,7 +119,7 @@ async function loadSettings() {
       planTier: currentSettings.plan_tier,
       premiumExpiresAt: currentSettings.premium_expires_at
     });
-    currentSettings = data;
+    currentSettings = { ...data, push_enabled: data.push_enabled ?? false };
   } else {
     currentSettings = {};
   }
@@ -164,7 +164,7 @@ form.addEventListener("submit", async (event) => {
   const payload = {
     user_id: session.user.id,
     email_enabled: formData.get("email_enabled") === "on",
-    push_enabled: formData.get("push_enabled") === "on",
+    push_enabled: currentSettings.push_enabled ?? false,
     notification_copy_email: trimmedNotificationCopyEmail || null,
     timezone: "Europe/Warsaw",
     plan_tier: "free",
