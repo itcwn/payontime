@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-client.js";
+import { AUTH_CONFIRM_REDIRECT_URL } from "./config.js";
 
 const form = document.getElementById("signup-form");
 const errorEl = document.getElementById("auth-error");
@@ -11,7 +12,13 @@ form.addEventListener("submit", async (event) => {
   const email = formData.get("email");
   const password = formData.get("password");
 
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: AUTH_CONFIRM_REDIRECT_URL
+    }
+  });
   if (error) {
     errorEl.textContent = error.message;
     return;

@@ -15,7 +15,10 @@ To repozytorium zawiera gotowe strony HTML + moduły JavaScript (ESM) z podłąc
 1. Utwórz projekt Supabase.
 2. Wykonaj migrację SQL z pliku `supabase/migrations/0001_init.sql`.
 3. Włącz RLS (jest w migracji).
-4. Skonfiguruj redirect URLs w Supabase Auth (np. `http://localhost:8080/app.html`).
+4. Skonfiguruj URL-e w Supabase Auth:
+   - **Site URL** ustaw na domenę produkcyjną (np. `https://twojadomena.pl`).
+   - **Redirect URLs** dodaj adresy, na które Supabase może przekierować po potwierdzeniu emaila,
+     np. `https://twojadomena.pl/auth-confirmed.html` oraz lokalnie `http://localhost:8080/auth-confirmed.html`.
 
 ## Konfiguracja frontendu
 
