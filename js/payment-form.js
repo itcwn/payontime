@@ -18,12 +18,9 @@ const recurringField = document.getElementById("recurring-field");
 const intervalInput = document.getElementById("interval-option");
 const intervalButtons = document.querySelectorAll("#interval-options .choice-button");
 const typeSelect = document.getElementById("payment-type");
-const typeSearchInput = document.getElementById("payment-type-search");
 const typeSearchToggle = document.getElementById("payment-type-search-toggle");
 const typeCustomInput = document.getElementById("payment-type-custom");
 const typeToggleButton = document.getElementById("payment-type-toggle");
-const typeControls = document.querySelector(".payment-type-controls");
-const typeSearchWrapper = typeSearchInput?.closest(".payment-type-search");
 const isActiveInput = document.getElementById("is-active");
 const isFixedInput = document.getElementById("is-fixed");
 const isAutomaticInput = document.getElementById("is-automatic");
@@ -38,6 +35,9 @@ const deleteButton = document.getElementById("delete-payment");
 
 let existingDayOfMonth = null;
 let existingIsLastDay = false;
+let typeSearchBuffer = "";
+let typeSearchTimeout = null;
+let isTypeSearchActive = false;
 const monthNames = [
   "Styczeń",
   "Luty",
@@ -64,18 +64,12 @@ function isCustomPaymentType() {
 }
 
 function setCustomPaymentType(enabled) {
-  if (!typeSelect || !typeCustomInput || !typeToggleButton || !typeSearchInput) return;
+  if (!typeSelect || !typeCustomInput || !typeToggleButton) return;
   if (enabled) {
     typeSelect.style.display = "none";
-    setSearchVisibility(false);
-    if (typeSearchWrapper) {
-      typeSearchWrapper.setAttribute("aria-hidden", "true");
-    }
+    stopTypeSearch();
     if (typeSearchToggle) {
       typeSearchToggle.style.display = "none";
-    }
-    if (typeControls) {
-      typeControls.classList.remove("is-search-open");
     }
     typeCustomInput.style.display = "block";
     typeToggleButton.textContent = "Wybierz z listy";
@@ -85,9 +79,6 @@ function setCustomPaymentType(enabled) {
     typeCustomInput.focus();
   } else {
     typeSelect.style.display = "block";
-    if (typeSearchWrapper) {
-      typeSearchWrapper.setAttribute("aria-hidden", typeControls?.classList.contains("is-search-open") ? "false" : "true");
-    }
     if (typeSearchToggle) {
       typeSearchToggle.style.display = "inline-flex";
     }
@@ -101,19 +92,6 @@ function setCustomPaymentType(enabled) {
   }
 }
 
-function setSearchVisibility(isOpen) {
-  if (!typeControls || !typeSearchInput || !typeSearchWrapper || !typeSearchToggle) return;
-  typeControls.classList.toggle("is-search-open", isOpen);
-  typeSearchWrapper.setAttribute("aria-hidden", isOpen ? "false" : "true");
-  typeSearchToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-  if (isOpen) {
-    typeSearchInput.focus();
-  } else {
-    typeSearchInput.value = "";
-    filterPaymentTypes("");
-  }
-}
-
 function filterPaymentTypes(query) {
   if (!typeSelect) return;
   const normalized = query.trim().toLowerCase();
@@ -124,6 +102,48 @@ function filterPaymentTypes(query) {
   renderPaymentTypeOptions(typeSelect, filteredTypes);
   if (filteredTypes.includes(currentValue)) {
     typeSelect.value = currentValue;
+  }
+}
+
+function stopTypeSearch() {
+  isTypeSearchActive = false;
+  typeSearchBuffer = "";
+  if (typeSearchToggle) {
+    typeSearchToggle.setAttribute("aria-pressed", "false");
+  }
+  if (typeSearchTimeout) {
+    clearTimeout(typeSearchTimeout);
+    typeSearchTimeout = null;
+  }
+  filterPaymentTypes("");
+}
+
+function resetTypeSearchTimeout() {
+  if (typeSearchTimeout) {
+    clearTimeout(typeSearchTimeout);
+  }
+  typeSearchTimeout = setTimeout(() => {
+    typeSearchBuffer = "";
+    filterPaymentTypes("");
+  }, 1200);
+}
+
+function handleTypeSearchKeydown(event) {
+  if (!isTypeSearchActive) return;
+  if (event.key === "Escape") {
+    stopTypeSearch();
+    return;
+  }
+  if (event.key === "Backspace") {
+    typeSearchBuffer = typeSearchBuffer.slice(0, -1);
+    filterPaymentTypes(typeSearchBuffer);
+    resetTypeSearchTimeout();
+    return;
+  }
+  if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    typeSearchBuffer += event.key;
+    filterPaymentTypes(typeSearchBuffer);
+    resetTypeSearchTimeout();
   }
 }
 
@@ -392,17 +412,26 @@ form.querySelectorAll("input[name='remind_offsets']").forEach((checkbox) => {
 
 document.getElementById("due-date").addEventListener("change", buildReminderPreview);
 
-if (typeSearchToggle && typeSearchInput) {
-  typeSearchToggle.setAttribute("aria-expanded", "false");
+if (typeSearchToggle && typeSelect) {
+  typeSearchToggle.setAttribute("aria-pressed", "false");
   typeSearchToggle.addEventListener("click", () => {
-    const isOpen = typeControls?.classList.contains("is-search-open");
-    setSearchVisibility(!isOpen);
+    isTypeSearchActive = true;
+    typeSearchToggle.setAttribute("aria-pressed", "true");
+    typeSearchBuffer = "";
+    filterPaymentTypes("");
+    typeSelect.focus();
+    if (typeof typeSelect.showPicker === "function") {
+      typeSelect.showPicker();
+    }
   });
 }
 
-if (typeSearchInput) {
-  typeSearchInput.addEventListener("input", (event) => {
-    filterPaymentTypes(event.target.value);
+if (typeSelect) {
+  typeSelect.addEventListener("keydown", handleTypeSearchKeydown);
+  typeSelect.addEventListener("blur", () => {
+    if (isTypeSearchActive) {
+      stopTypeSearch();
+    }
   });
 }
 
