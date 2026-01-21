@@ -784,19 +784,6 @@ input[type="radio"] {
 
 .payment-type-controls .select {
   min-width: 200px;
-  transition: flex-basis 0.2s ease;
-}
-
-.payment-type-controls.is-search-open .select {
-  flex-basis: 180px;
-}
-
-.payment-type-search {
-  display: none;
-}
-
-.payment-type-controls.is-search-open .payment-type-search {
-  display: block;
 }
 
 .payment-type-search-toggle {
@@ -821,23 +808,6 @@ input[type="radio"] {
   outline-offset: 2px;
 }
 
-.input-icon {
-  position: relative;
-  flex: 1 1 220px;
-}
-
-.input-icon .input {
-  padding-left: 36px;
-}
-
-.input-icon-addon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-  pointer-events: none;
-}
 
 .button-compact {
   padding: 10px 12px;
@@ -1253,8 +1223,6 @@ input[type="radio"] {
 
   .payment-type-controls .select,
   .payment-type-controls .input,
-  .payment-type-controls .payment-type-search,
-  .payment-type-controls .input-icon,
   .payment-type-controls .payment-type-search-toggle,
   .payment-type-controls .button {
     width: 100%;
@@ -1263,10 +1231,6 @@ input[type="radio"] {
 
   .payment-type-controls .payment-type-search-toggle {
     justify-content: center;
-  }
-
-  .payment-type-controls .input-icon {
-    flex: 1 1 auto;
   }
 
   .payment-type-controls .payment-type-search-toggle,
