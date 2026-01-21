@@ -64,6 +64,7 @@ function updatePremiumStatus({ planTier, premiumExpiresAt }) {
     premiumExpiryEl.textContent = "";
   }
 }
+let currentSettings = {};
 
 async function loadSettings() {
   const session = await requireSession();
@@ -118,9 +119,9 @@ async function loadSettings() {
       planTier: currentSettings.plan_tier,
       premiumExpiresAt: currentSettings.premium_expires_at
     });
+    currentSettings = data;
   } else {
-    currentSettings = { plan_tier: "free", premium_expires_at: null };
-    updatePremiumStatus({ planTier: "free", premiumExpiresAt: null });
+    currentSettings = {};
   }
 }
 
@@ -166,8 +167,8 @@ form.addEventListener("submit", async (event) => {
     push_enabled: formData.get("push_enabled") === "on",
     notification_copy_email: trimmedNotificationCopyEmail || null,
     timezone: "Europe/Warsaw",
-    plan_tier: selectedPlan,
-    premium_expires_at: premiumExpiresAt
+    plan_tier: "free",
+    premium_expires_at: null
   };
 
   const { error: profileError } = await supabase.auth.updateUser({
@@ -186,14 +187,7 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
-  currentSettings = {
-    plan_tier: payload.plan_tier,
-    premium_expires_at: payload.premium_expires_at
-  };
-  updatePremiumStatus({
-    planTier: payload.plan_tier,
-    premiumExpiresAt: payload.premium_expires_at
-  });
+  currentSettings = payload;
   successEl.textContent = "Zapisano ustawienia.";
 });
 
