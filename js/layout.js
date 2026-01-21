@@ -83,10 +83,6 @@ const footerTemplates = {
       <div class="container footer-content">
         <div class="footer-brand">
           <img src="./css/logo_m_black.jpg" alt="ZapłaćNaCzas" />
-          <p class="muted">
-            ZapłaćNaCzas sp. z o.o.<br />
-            ul. Przykładowa 12, 00-001 Warszawa
-          </p>
         </div>
         <div class="footer-section">
           <h3>Kontakt</h3>
@@ -110,7 +106,7 @@ const footerTemplates = {
           </ul>
         </div>
       </div>
-      <div class="footer-bottom">© 2024 ZapłaćNaCzas. Wszelkie prawa zastrzeżone.</div>
+      <div class="footer-bottom">© 2026 ZapłaćNaCzas. Wszelkie prawa zastrzeżone. Aplikacja stworzona przy wsparciu AI — testuj i korzystaj.</div>
     </footer>
   `,
   public: `
@@ -118,10 +114,6 @@ const footerTemplates = {
       <div class="container footer-content">
         <div class="footer-brand">
           <img src="./css/logo_m_black.jpg" alt="ZapłaćNaCzas" />
-          <p class="muted">
-            ZapłaćNaCzas sp. z o.o.<br />
-            ul. Przykładowa 12, 00-001 Warszawa
-          </p>
         </div>
         <div class="footer-section">
           <h3>Kontakt</h3>
@@ -146,7 +138,7 @@ const footerTemplates = {
           </ul>
         </div>
       </div>
-      <div class="footer-bottom">© 2024 ZapłaćNaCzas. Wszelkie prawa zastrzeżone.</div>
+      <div class="footer-bottom">© 2026 ZapłaćNaCzas. Wszelkie prawa zastrzeżone. Aplikacja stworzona przy wsparciu AI — testuj i korzystaj.</div>
     </footer>
   `,
 };
