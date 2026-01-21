@@ -14,6 +14,7 @@ const logoutButton = document.getElementById("logout-button");
 const userEmail = document.getElementById("user-email");
 const settingsUserEmail = document.getElementById("settings-user-email");
 const displayNameInput = document.getElementById("display-name");
+const notificationCopyEmailInput = document.getElementById("notification-copy-email");
 const planFreeInput = document.getElementById("plan-free");
 const planPremiumInput = document.getElementById("plan-premium");
 const premiumStatusEl = document.getElementById("premium-status");
@@ -99,6 +100,9 @@ async function loadSettings() {
   if (data) {
     form.querySelector("#email-enabled").checked = data.email_enabled;
     form.querySelector("#push-enabled").checked = data.push_enabled;
+    if (notificationCopyEmailInput) {
+      notificationCopyEmailInput.value = data.notification_copy_email ?? "";
+    }
     currentSettings = {
       plan_tier: data.plan_tier ?? "free",
       premium_expires_at: data.premium_expires_at ?? null
@@ -134,6 +138,9 @@ form.addEventListener("submit", async (event) => {
   const displayName = formData.get("display_name");
   const trimmedDisplayName =
     typeof displayName === "string" ? displayName.trim() : "";
+  const notificationCopyEmail = formData.get("notification_copy_email");
+  const trimmedNotificationCopyEmail =
+    typeof notificationCopyEmail === "string" ? notificationCopyEmail.trim() : "";
   const selectedPlan = formData.get("plan_tier") === "premium" ? "premium" : "free";
 
   const existingExpiry = currentSettings.premium_expires_at;
@@ -157,6 +164,7 @@ form.addEventListener("submit", async (event) => {
     user_id: session.user.id,
     email_enabled: formData.get("email_enabled") === "on",
     push_enabled: formData.get("push_enabled") === "on",
+    notification_copy_email: trimmedNotificationCopyEmail || null,
     timezone: "Europe/Warsaw",
     plan_tier: selectedPlan,
     premium_expires_at: premiumExpiresAt
