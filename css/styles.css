@@ -619,6 +619,7 @@ main {
   color: #ffffff;
 }
 
+#interval-options .choice-button.is-selected,
 #day-options .choice-button.is-selected,
 #month-options .choice-button.is-selected {
   color: #000000;
