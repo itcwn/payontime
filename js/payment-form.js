@@ -19,6 +19,13 @@ const intervalInput = document.getElementById("interval-option");
 const intervalButtons = document.querySelectorAll("#interval-options .choice-button");
 const typeSelect = document.getElementById("payment-type");
 const typeSearchToggle = document.getElementById("payment-type-search-toggle");
+const typeModal = document.getElementById("payment-type-modal");
+const typeModalSearchInput = document.getElementById("payment-type-search-input");
+const typeModalResults = document.getElementById("payment-type-results");
+const typeModalSelectionLabel = document.getElementById("payment-type-selection");
+const typeModalConfirm = document.getElementById("payment-type-confirm");
+const typeModalCancel = document.getElementById("payment-type-cancel");
+const typeModalAddCustom = document.getElementById("payment-type-add-custom");
 const typeCustomInput = document.getElementById("payment-type-custom");
 const typeToggleButton = document.getElementById("payment-type-toggle");
 const isActiveInput = document.getElementById("is-active");
@@ -35,9 +42,8 @@ const deleteButton = document.getElementById("delete-payment");
 
 let existingDayOfMonth = null;
 let existingIsLastDay = false;
-let typeSearchBuffer = "";
-let typeSearchTimeout = null;
-let isTypeSearchActive = false;
+let typeModalSelection = "";
+let typeModalIsCustom = false;
 const monthNames = [
   "Styczeń",
   "Luty",
@@ -67,9 +73,8 @@ function setCustomPaymentType(enabled) {
   if (!typeSelect || !typeCustomInput || !typeToggleButton) return;
   if (enabled) {
     typeSelect.style.display = "none";
-    stopTypeSearch();
     if (typeSearchToggle) {
-      typeSearchToggle.style.display = "none";
+      typeSearchToggle.style.display = "inline-flex";
     }
     typeCustomInput.style.display = "block";
     typeToggleButton.textContent = "Wybierz z listy";
@@ -92,59 +97,98 @@ function setCustomPaymentType(enabled) {
   }
 }
 
-function filterPaymentTypes(query) {
-  if (!typeSelect) return;
+function getFilteredPaymentTypes(query) {
   const normalized = query.trim().toLowerCase();
-  const filteredTypes = normalized
+  return normalized
     ? paymentTypeOptions.filter((type) => type.toLowerCase().includes(normalized))
     : paymentTypeOptions;
-  const currentValue = typeSelect.value;
-  renderPaymentTypeOptions(typeSelect, filteredTypes);
-  if (filteredTypes.includes(currentValue)) {
-    typeSelect.value = currentValue;
+}
+
+function updateTypeModalSelectionLabel() {
+  if (!typeModalSelectionLabel) return;
+  typeModalSelectionLabel.textContent = typeModalSelection
+    ? `Wybrano: ${typeModalSelection}`
+    : "Wybrano: —";
+}
+
+function renderTypeModalResults(query) {
+  if (!typeModalResults) return;
+  typeModalResults.textContent = "";
+  const results = getFilteredPaymentTypes(query);
+  if (!results.length) {
+    const empty = document.createElement("span");
+    empty.className = "help-text";
+    empty.textContent = "Brak wyników. Dodaj własną płatność przyciskiem +.";
+    typeModalResults.appendChild(empty);
+  } else {
+    results.forEach((type) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "payment-type-chip";
+    chip.textContent = type;
+    if (typeModalSelection === type && !typeModalIsCustom) {
+      chip.classList.add("is-selected");
+    }
+    chip.addEventListener("click", () => {
+      typeModalSelection = type;
+      typeModalIsCustom = false;
+      updateTypeModalSelectionLabel();
+      renderTypeModalResults(typeModalSearchInput?.value ?? "");
+    });
+    typeModalResults.appendChild(chip);
+    });
+  }
+  if (typeModalIsCustom && typeModalSelection) {
+    const customChip = document.createElement("button");
+    customChip.type = "button";
+    customChip.className = "payment-type-chip is-custom is-selected";
+    customChip.textContent = `Własna: ${typeModalSelection}`;
+    customChip.addEventListener("click", () => {
+      typeModalIsCustom = true;
+      updateTypeModalSelectionLabel();
+    });
+    typeModalResults.appendChild(customChip);
   }
 }
 
-function stopTypeSearch() {
-  isTypeSearchActive = false;
-  typeSearchBuffer = "";
-  if (typeSearchToggle) {
-    typeSearchToggle.setAttribute("aria-pressed", "false");
+function openTypeModal() {
+  if (!typeModal) return;
+  typeModalSelection = getPaymentTypeValue();
+  typeModalIsCustom = isCustomPaymentType();
+  if (typeModalSearchInput) {
+    typeModalSearchInput.value = "";
   }
-  if (typeSearchTimeout) {
-    clearTimeout(typeSearchTimeout);
-    typeSearchTimeout = null;
-  }
-  filterPaymentTypes("");
+  renderTypeModalResults("");
+  updateTypeModalSelectionLabel();
+  typeModal.classList.add("is-open");
+  typeModal.setAttribute("aria-hidden", "false");
+  typeModalSearchInput?.focus();
 }
 
-function resetTypeSearchTimeout() {
-  if (typeSearchTimeout) {
-    clearTimeout(typeSearchTimeout);
-  }
-  typeSearchTimeout = setTimeout(() => {
-    typeSearchBuffer = "";
-    filterPaymentTypes("");
-  }, 1200);
+function closeTypeModal() {
+  if (!typeModal) return;
+  typeModal.classList.remove("is-open");
+  typeModal.setAttribute("aria-hidden", "true");
 }
 
-function handleTypeSearchKeydown(event) {
-  if (!isTypeSearchActive) return;
-  if (event.key === "Escape") {
-    stopTypeSearch();
+function applyTypeModalSelection() {
+  if (!typeModalSelection) {
+    closeTypeModal();
     return;
   }
-  if (event.key === "Backspace") {
-    typeSearchBuffer = typeSearchBuffer.slice(0, -1);
-    filterPaymentTypes(typeSearchBuffer);
-    resetTypeSearchTimeout();
-    return;
+  const matchedType = paymentTypeOptions.find((type) => type.toLowerCase() === typeModalSelection.toLowerCase());
+  if (!typeModalIsCustom && matchedType) {
+    setCustomPaymentType(false);
+    if (typeSelect) {
+      typeSelect.value = matchedType;
+    }
+  } else {
+    setCustomPaymentType(true);
+    if (typeCustomInput) {
+      typeCustomInput.value = typeModalSelection;
+    }
   }
-  if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-    typeSearchBuffer += event.key;
-    filterPaymentTypes(typeSearchBuffer);
-    resetTypeSearchTimeout();
-  }
+  closeTypeModal();
 }
 
 function getPaymentTypeValue() {
@@ -412,28 +456,57 @@ form.querySelectorAll("input[name='remind_offsets']").forEach((checkbox) => {
 
 document.getElementById("due-date").addEventListener("change", buildReminderPreview);
 
-if (typeSearchToggle && typeSelect) {
-  typeSearchToggle.setAttribute("aria-pressed", "false");
-  typeSearchToggle.addEventListener("click", () => {
-    isTypeSearchActive = true;
-    typeSearchToggle.setAttribute("aria-pressed", "true");
-    typeSearchBuffer = "";
-    filterPaymentTypes("");
-    typeSelect.focus();
-    if (typeof typeSelect.showPicker === "function") {
-      typeSelect.showPicker();
+if (typeSearchToggle) {
+  typeSearchToggle.addEventListener("click", openTypeModal);
+}
+
+if (typeModalSearchInput) {
+  typeModalSearchInput.addEventListener("input", (event) => {
+    renderTypeModalResults(event.target.value);
+  });
+  typeModalSearchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      applyTypeModalSelection();
     }
   });
 }
 
-if (typeSelect) {
-  typeSelect.addEventListener("keydown", handleTypeSearchKeydown);
-  typeSelect.addEventListener("blur", () => {
-    if (isTypeSearchActive) {
-      stopTypeSearch();
+if (typeModalAddCustom) {
+  typeModalAddCustom.addEventListener("click", () => {
+    const customValue = typeModalSearchInput?.value.trim();
+    if (!customValue) {
+      typeModalSearchInput?.focus();
+      return;
     }
+    typeModalSelection = customValue;
+    typeModalIsCustom = true;
+    updateTypeModalSelectionLabel();
+    renderTypeModalResults(typeModalSearchInput?.value ?? "");
   });
 }
+
+if (typeModalConfirm) {
+  typeModalConfirm.addEventListener("click", applyTypeModalSelection);
+}
+
+if (typeModalCancel) {
+  typeModalCancel.addEventListener("click", closeTypeModal);
+}
+
+if (typeModal) {
+  typeModal.querySelectorAll("[data-close-modal]").forEach((button) => {
+    button.addEventListener("click", closeTypeModal);
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (!typeModal || !typeModal.classList.contains("is-open")) return;
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closeTypeModal();
+  }
+});
 
 if (typeToggleButton) {
   typeToggleButton.addEventListener("click", () => {

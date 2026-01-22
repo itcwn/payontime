@@ -191,6 +191,30 @@
         </form>
       </div>
     </main>
+    <div class="modal" id="payment-type-modal" aria-hidden="true">
+      <div class="modal-overlay" data-close-modal></div>
+      <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="payment-type-modal-title">
+        <div class="modal-header">
+          <h2 id="payment-type-modal-title">Wybierz płatność</h2>
+          <button class="modal-close" type="button" data-close-modal aria-label="Zamknij okno">×</button>
+        </div>
+        <div class="modal-body stack">
+          <label class="stack">
+            <span class="muted">Wyszukaj w liście</span>
+            <div class="payment-type-search-field">
+              <input class="input" type="text" id="payment-type-search-input" placeholder="Wpisz nazwę płatności" />
+              <button class="payment-type-add-custom" type="button" id="payment-type-add-custom" aria-label="Dodaj własną">+</button>
+            </div>
+          </label>
+          <div class="payment-type-results" id="payment-type-results" role="listbox" aria-label="Wyniki wyszukiwania"></div>
+          <p class="help-text" id="payment-type-selection">Wybrano: —</p>
+        </div>
+        <div class="modal-actions">
+          <button class="button button-secondary" type="button" id="payment-type-cancel">Anuluj</button>
+          <button class="button button-primary" type="button" id="payment-type-confirm">OK</button>
+        </div>
+      </div>
+    </div>
     <div data-layout-footer="app"></div>
     <script type="module" src="./js/layout.js"></script>
     <script type="module" src="./js/payment-form.js"></script>
