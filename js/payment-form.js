@@ -74,7 +74,7 @@ function setCustomPaymentType(enabled) {
   if (enabled) {
     typeSelect.style.display = "none";
     if (typeSearchToggle) {
-      typeSearchToggle.style.display = "inline-flex";
+      typeSearchToggle.style.display = "none";
     }
     typeCustomInput.style.display = "block";
     typeToggleButton.textContent = "Wybierz z listy";
