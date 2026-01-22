@@ -198,6 +198,22 @@ function getPaymentTypeValue() {
   return typeSelect?.value ?? "";
 }
 
+function normalizeProviderAddress(value) {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+  try {
+    const url = new URL(trimmed, window.location.origin);
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return null;
+    }
+    return url.href;
+  } catch (error) {
+    return null;
+  }
+}
+
 function updateScheduleVisibility() {
   const mode = document.querySelector("input[name='schedule_mode']:checked").value;
   if (mode === "one_time") {
@@ -584,13 +600,19 @@ form.addEventListener("submit", async (event) => {
   const isFixed = formData.get("is_fixed") === "on";
   const isAutomatic = formData.get("is_automatic") === "on";
   const cycleStartDate = formData.get("cycle_start_date") || null;
+  const providerInput = formData.get("provider_address");
+  const providerAddress = providerInput ? normalizeProviderAddress(String(providerInput)) : null;
+  if (providerInput && !providerAddress) {
+    errorEl.textContent = "Adres płatności musi zaczynać się od http:// lub https://.";
+    return;
+  }
 
   const payload = {
     payment_type: getPaymentTypeValue(),
     name: formData.get("name") || null,
     amount: formData.get("amount") ? Number(String(formData.get("amount")).replace(",", ".")) : null,
     currency: "PLN",
-    provider_address: formData.get("provider_address") || null,
+    provider_address: providerAddress,
     schedule_mode: scheduleMode,
     due_date: scheduleMode === "one_time" ? formData.get("due_date") : null,
     cycle_start_date: scheduleMode === "recurring" ? cycleStartDate : null,
