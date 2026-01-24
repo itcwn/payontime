@@ -22,6 +22,7 @@ type UserSettings = {
   user_id: string;
   timezone: string;
   email_enabled: boolean;
+  notification_copy_email: string | null;
 };
 
 const defaultTimezone = "Europe/Warsaw";
@@ -30,6 +31,7 @@ const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const resendApiKey = Deno.env.get("RESEND_API_KEY") ?? "";
 const resendFrom = Deno.env.get("RESEND_FROM") ?? "";
+const resendFromName = Deno.env.get("RESEND_FROM_NAME") ?? "ZapłaćNaCzas";
 const cronSecret = Deno.env.get("CRON_SECRET") ?? "";
 const remindersBatchSize = Math.max(1, Number(Deno.env.get("REMINDERS_BATCH_SIZE") ?? "1000"));
 
@@ -105,6 +107,8 @@ function buildReminderEmailText(items: Array<{ name: string; due_date: string | 
         `- ${item.name} | Termin płatności: ${item.due_date ?? "—"} | ${item.provider_address ?? "Brak linku"}`
     ),
     "",
+    "Nowa płatność? Dodaj ją od razu w systemie: https://itcwn.github.io/payontime/payments-new.html",
+    "",
     "Twój asystent ZapłaćNaCzas"
   ];
 
@@ -135,11 +139,18 @@ function buildReminderEmailHtml(items: Array<{ name: string; due_date: string | 
   <div style="background:#f8fafc;padding:24px 12px;font-family:Inter,Arial,sans-serif;color:#0f172a;">
     <div style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
       <div style="padding:24px;border-bottom:1px solid #e2e8f0;">
-        <img src="https://itcwn.github.io/payontime/css/logo_m.png" alt="ZapłaćNaCzas" style="height:36px;width:auto;display:block;" />
+        <div style="display:inline-flex;align-items:center;justify-content:center;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:6px;">
+          <img src="https://itcwn.github.io/payontime/css/logo_m.png" alt="ZapłaćNaCzas" style="height:36px;width:auto;display:block;" />
+        </div>
       </div>
       <div style="padding:24px 24px 8px;">
         <h2 style="margin:0 0 8px;font-size:20px;">Cześć, tu ZapłaćNaCzas!</h2>
         <p style="margin:0 0 16px;color:#475569;">Oto Twoje zbliżające się płatności:</p>
+        <p style="margin:0 0 12px;">
+          <a href="https://itcwn.github.io/payontime/payments-new.html" style="color:#2563eb;text-decoration:none;font-weight:600;">
+            Nowa płatność? Dodaj ją od razu w systemie!
+          </a>
+        </p>
       </div>
       <div style="padding:0 24px 24px;">
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
@@ -164,31 +175,54 @@ function buildReminderEmailHtml(items: Array<{ name: string; due_date: string | 
       <div style="padding:20px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;">
         <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;">
           <div style="min-width:200px;">
-            <img src="https://itcwn.github.io/payontime/css/logo_m.png" alt="ZapłaćNaCzas" style="height:28px;width:auto;display:block;margin-bottom:8px;" />
-            <p style="margin:0;color:#64748b;font-size:13px;line-height:1.5;">
-              ZapłaćNaCzas sp. z o.o.<br />
-              ul. Przykładowa 12, 00-001 Warszawa
-            </p>
+            <div style="display:inline-flex;align-items:center;justify-content:center;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:5px;margin-bottom:8px;">
+              <img src="https://itcwn.github.io/payontime/css/logo_m_black.jpg" alt="ZapłaćNaCzas" style="height:28px;width:auto;display:block;" />
+            </div>
           </div>
           <div style="min-width:160px;">
             <p style="margin:0 0 6px;font-weight:600;">Kontakt</p>
             <p style="margin:0;color:#475569;font-size:13px;">
-              <a href="mailto:kontakt@zaplacnaczas.pl" style="color:#2563eb;text-decoration:none;">kontakt@zaplacnaczas.pl</a><br />
-              +48 123 456 789
+              <a href="mailto:kontakt@zaplacnaczas.pl" style="color:#2563eb;text-decoration:none;">kontakt@zaplacnaczas.pl</a>
+            </p>
+          </div>
+          <div style="min-width:160px;">
+            <p style="margin:0 0 6px;font-weight:600;">Social media</p>
+            <p style="margin:0;color:#475569;font-size:13px;">
+              <a href="https://facebook.com/zaplacnaczas" style="color:#2563eb;text-decoration:none;">Facebook</a>
+            </p>
+          </div>
+          <div style="min-width:200px;">
+            <p style="margin:0 0 6px;font-weight:600;">Przydatne linki</p>
+            <p style="margin:0;color:#475569;font-size:13px;line-height:1.6;">
+              <a href="https://itcwn.github.io/payontime/app.html" style="color:#2563eb;text-decoration:none;">Dashboard</a><br />
+              <a href="https://itcwn.github.io/payontime/payments-new.html" style="color:#2563eb;text-decoration:none;">Nowa płatność</a><br />
+              <a href="https://itcwn.github.io/payontime/report-bug.html" style="color:#2563eb;text-decoration:none;">Zgłoś błąd</a><br />
+              <a href="https://itcwn.github.io/payontime/report-idea.html" style="color:#2563eb;text-decoration:none;">Zgłoś pomysł</a><br />
+              <a href="https://itcwn.github.io/payontime/regulamin.html" style="color:#2563eb;text-decoration:none;">Regulamin</a><br />
+              <a href="https://itcwn.github.io/payontime/polityka-prywatnosci.html" style="color:#2563eb;text-decoration:none;">Polityka prywatności</a>
             </p>
           </div>
         </div>
-        <p style="margin:16px 0 0;font-size:13px;color:#64748b;">Twój asystent ZapłaćNaCzas</p>
+        <p style="margin:16px 0 0;font-size:13px;color:#64748b;">
+          © 2026 ZapłaćNaCzas. Wszelkie prawa zastrzeżone. Aplikacja stworzona przy wsparciu AI — testuj i korzystaj.
+        </p>
       </div>
     </div>
   </div>
   `;
 }
 
-async function sendReminderEmail(to: string, subject: string, text: string, html: string) {
+function formatResendFrom(value: string, name: string) {
+  if (!value) return value;
+  if (value.includes("<") && value.includes(">")) return value;
+  return `${name} <${value}>`;
+}
+
+async function sendReminderEmail(to: string, subject: string, text: string, html: string, cc?: string) {
+  const fromAddress = formatResendFrom(resendFrom, resendFromName);
   logStep("resend:request", {
     to,
-    from: resendFrom,
+    from: fromAddress,
     subject,
     hasResendApiKey: Boolean(resendApiKey)
   });
@@ -199,8 +233,9 @@ async function sendReminderEmail(to: string, subject: string, text: string, html
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      from: resendFrom,
+      from: fromAddress,
       to,
+      cc: cc ? [cc] : undefined,
       subject,
       text,
       html
@@ -328,7 +363,7 @@ serve(async (request) => {
   logStep("supabase:client_created");
   const { data: settings, error: settingsError } = await adminClient
     .from("user_settings")
-    .select("user_id,timezone,email_enabled");
+    .select("user_id,timezone,email_enabled,notification_copy_email");
 
   if (settingsError) {
     logStep("supabase:settings_error", { message: settingsError.message });
@@ -347,6 +382,7 @@ serve(async (request) => {
     {
       timezone: string;
       emailEnabled: boolean;
+      notificationCopyEmail: string | null;
       items: Array<{ payment: PaymentRecord; dueDate: string; offsets: number[] }>;
     }
   >();
@@ -401,6 +437,7 @@ serve(async (request) => {
       const entry = grouped.get(payment.user_id) ?? {
         timezone,
         emailEnabled: userSettings?.email_enabled ?? true,
+        notificationCopyEmail: userSettings?.notification_copy_email ?? null,
         items: []
       };
       entry.items.push({ payment, dueDate, offsets: offsetsForToday });
@@ -424,6 +461,7 @@ serve(async (request) => {
       user_id: userId,
       timezone: entry.timezone,
       email_enabled: entry.emailEnabled,
+      notification_copy_email: entry.notificationCopyEmail,
       raw_items: entry.items,
       items,
       message: buildReminderEmailText(items),
@@ -522,7 +560,13 @@ serve(async (request) => {
     const filteredHtmlMessage = buildReminderEmailHtml(filteredItems);
 
     try {
-      await sendReminderEmail(email, "Przypomnienia o płatnościach", filteredMessage, filteredHtmlMessage);
+      await sendReminderEmail(
+        email,
+        "Przypomnienia o płatnościach",
+        filteredMessage,
+        filteredHtmlMessage,
+        user.notification_copy_email ?? undefined
+      );
       results.push({ user_id: user.user_id, email, status: "sent" });
       logStep("user:email_sent", { user_id: user.user_id, email });
 
