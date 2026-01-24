@@ -24,6 +24,7 @@ let currentSettings = {
   premium_expires_at: null,
   push_enabled: false
 };
+let supportsPlanFields = true;
 
 function formatDate(value) {
   if (!value) {
@@ -99,6 +100,9 @@ async function loadSettings() {
   }
 
   if (data) {
+    supportsPlanFields =
+      Object.prototype.hasOwnProperty.call(data, "plan_tier") ||
+      Object.prototype.hasOwnProperty.call(data, "premium_expires_at");
     form.querySelector("#email-enabled").checked = data.email_enabled;
     if (notificationCopyEmailInput) {
       notificationCopyEmailInput.value = data.notification_copy_email ?? "";
@@ -123,6 +127,17 @@ async function loadSettings() {
   } else {
     currentSettings = {};
   }
+}
+
+function isPlanFieldSchemaError(error) {
+  if (!error) {
+    return false;
+  }
+  const message = error.message ?? "";
+  return (
+    error.code === "PGRST204" &&
+    (message.includes("plan_tier") || message.includes("premium_expires_at"))
+  );
 }
 
 form.addEventListener("submit", async (event) => {
@@ -166,10 +181,12 @@ form.addEventListener("submit", async (event) => {
     email_enabled: formData.get("email_enabled") === "on",
     push_enabled: currentSettings.push_enabled ?? false,
     notification_copy_email: trimmedNotificationCopyEmail || null,
-    timezone: "Europe/Warsaw",
-    plan_tier: "free",
-    premium_expires_at: null
+    timezone: "Europe/Warsaw"
   };
+  if (supportsPlanFields) {
+    payload.plan_tier = selectedPlan;
+    payload.premium_expires_at = premiumExpiresAt;
+  }
 
   const { error: profileError } = await supabase.auth.updateUser({
     data: {
@@ -181,7 +198,13 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
-  const { error } = await supabase.from("user_settings").upsert(payload);
+  let { error } = await supabase.from("user_settings").upsert(payload);
+  if (isPlanFieldSchemaError(error)) {
+    supportsPlanFields = false;
+    delete payload.plan_tier;
+    delete payload.premium_expires_at;
+    ({ error } = await supabase.from("user_settings").upsert(payload));
+  }
   if (error) {
     errorEl.textContent = error.message;
     return;
