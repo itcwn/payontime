@@ -127,88 +127,139 @@ function buildReminderEmailHtml(items: Array<{ name: string; due_date: string | 
         : `<span style="color:#9ca3af;">Brak linku</span>`;
       return `
         <tr>
-          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;">${name}</td>
-          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;">${dueDate}</td>
-          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;">${provider}</td>
+          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;word-break:break-word;">${name}</td>
+          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;word-break:break-word;">${dueDate}</td>
+          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;word-break:break-word;">${provider}</td>
         </tr>
       `;
     })
     .join("");
 
   return `
-  <div style="background:#f8fafc;padding:24px 12px;font-family:Inter,Arial,sans-serif;color:#0f172a;">
-    <div style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
-      <div style="padding:24px;border-bottom:1px solid #e2e8f0;">
-        <div style="display:inline-flex;align-items:center;justify-content:center;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:6px;">
-          <img src="https://itcwn.github.io/payontime/css/logo_m.png" alt="ZapłaćNaCzas" style="height:36px;width:auto;display:block;" />
-        </div>
-      </div>
-      <div style="padding:24px 24px 8px;">
-        <h2 style="margin:0 0 8px;font-size:20px;">Cześć, tu ZapłaćNaCzas!</h2>
-        <p style="margin:0 0 16px;color:#475569;">Oto Twoje zbliżające się płatności:</p>
-        <p style="margin:0 0 12px;">
-          <a href="https://itcwn.github.io/payontime/payments-new.html" style="color:#2563eb;text-decoration:none;font-weight:600;">
-            Nowa płatność? Dodaj ją od razu w systemie!
-          </a>
-        </p>
-      </div>
-      <div style="padding:0 24px 24px;">
-        <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <thead>
-            <tr>
-              <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;">
-                Nazwa
-              </th>
-              <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;">
-                Termin
-              </th>
-              <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;">
-                Dostawca
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rows}
-          </tbody>
-        </table>
-      </div>
-      <div style="padding:20px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;">
-        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;">
-          <div style="min-width:200px;">
-            <div style="display:inline-flex;align-items:center;justify-content:center;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:5px;margin-bottom:8px;">
-              <img src="https://itcwn.github.io/payontime/css/logo_m_black.jpg" alt="ZapłaćNaCzas" style="height:28px;width:auto;display:block;" />
-            </div>
-          </div>
-          <div style="min-width:160px;">
-            <p style="margin:0 0 6px;font-weight:600;">Kontakt</p>
-            <p style="margin:0;color:#475569;font-size:13px;">
-              <a href="mailto:kontakt@zaplacnaczas.pl" style="color:#2563eb;text-decoration:none;">kontakt@zaplacnaczas.pl</a>
-            </p>
-          </div>
-          <div style="min-width:160px;">
-            <p style="margin:0 0 6px;font-weight:600;">Social media</p>
-            <p style="margin:0;color:#475569;font-size:13px;">
-              <a href="https://facebook.com/zaplacnaczas" style="color:#2563eb;text-decoration:none;">Facebook</a>
-            </p>
-          </div>
-          <div style="min-width:200px;">
-            <p style="margin:0 0 6px;font-weight:600;">Przydatne linki</p>
-            <p style="margin:0;color:#475569;font-size:13px;line-height:1.6;">
-              <a href="https://itcwn.github.io/payontime/app.html" style="color:#2563eb;text-decoration:none;">Dashboard</a><br />
-              <a href="https://itcwn.github.io/payontime/payments-new.html" style="color:#2563eb;text-decoration:none;">Nowa płatność</a><br />
-              <a href="https://itcwn.github.io/payontime/report-bug.html" style="color:#2563eb;text-decoration:none;">Zgłoś błąd</a><br />
-              <a href="https://itcwn.github.io/payontime/report-idea.html" style="color:#2563eb;text-decoration:none;">Zgłoś pomysł</a><br />
-              <a href="https://itcwn.github.io/payontime/regulamin.html" style="color:#2563eb;text-decoration:none;">Regulamin</a><br />
-              <a href="https://itcwn.github.io/payontime/polityka-prywatnosci.html" style="color:#2563eb;text-decoration:none;">Polityka prywatności</a>
-            </p>
-          </div>
-        </div>
-        <p style="margin:16px 0 0;font-size:13px;color:#64748b;">
-          © 2026 ZapłaćNaCzas. Wszelkie prawa zastrzeżone. Aplikacja stworzona przy wsparciu AI — testuj i korzystaj.
-        </p>
-      </div>
-    </div>
-  </div>
+  <!doctype html>
+  <html lang="pl">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <meta name="x-apple-disable-message-reformatting" />
+      <title>ZapłaćNaCzas</title>
+      <style>
+        @media screen and (max-width: 600px) {
+          .container {
+            width: 100% !important;
+          }
+          .mobile-padding {
+            padding: 16px !important;
+          }
+          .stack-column,
+          .stack-column-cell {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          .mobile-center {
+            text-align: center !important;
+          }
+          .mobile-small {
+            font-size: 12px !important;
+            line-height: 1.5 !important;
+          }
+          .mobile-hide {
+            display: none !important;
+          }
+        }
+      </style>
+    </head>
+    <body style="margin:0;padding:0;background:#f8fafc;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;font-family:Inter,Arial,sans-serif;color:#0f172a;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f8fafc;">
+        <tr>
+          <td align="center" style="padding:24px 12px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" class="container" style="max-width:680px;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
+              <tr>
+                <td class="mobile-padding" style="padding:24px;border-bottom:1px solid #e2e8f0;">
+                  <div style="display:inline-flex;align-items:center;justify-content:center;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:6px;">
+                    <img src="https://itcwn.github.io/payontime/css/logo_m.png" alt="ZapłaćNaCzas" style="height:36px;width:auto;display:block;" />
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="mobile-padding" style="padding:24px 24px 8px;">
+                  <h2 style="margin:0 0 8px;font-size:20px;">Cześć, tu ZapłaćNaCzas!</h2>
+                  <p style="margin:0 0 16px;color:#475569;">Oto Twoje zbliżające się płatności:</p>
+                  <p style="margin:0 0 12px;">
+                    <a href="https://itcwn.github.io/payontime/payments-new.html" style="color:#2563eb;text-decoration:none;font-weight:600;">
+                      Nowa płatność? Dodaj ją od razu w systemie!
+                    </a>
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <td class="mobile-padding" style="padding:0 24px 24px;">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;font-size:14px;table-layout:fixed;">
+                    <thead>
+                      <tr>
+                        <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;word-break:break-word;">
+                          Nazwa
+                        </th>
+                        <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;word-break:break-word;">
+                          Termin
+                        </th>
+                        <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;word-break:break-word;">
+                          Dostawca
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${rows}
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td class="mobile-padding" style="padding:20px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td class="stack-column-cell mobile-center" style="padding:0 0 16px;">
+                        <div style="display:inline-flex;align-items:center;justify-content:center;background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:5px;margin-bottom:8px;">
+                          <img src="https://itcwn.github.io/payontime/css/logo_m_black.jpg" alt="ZapłaćNaCzas" style="height:28px;width:auto;display:block;" />
+                        </div>
+                      </td>
+                      <td class="stack-column-cell" style="padding:0 16px 16px 0;min-width:160px;">
+                        <p style="margin:0 0 6px;font-weight:600;">Kontakt</p>
+                        <p style="margin:0;color:#475569;font-size:13px;">
+                          <a href="mailto:kontakt@zaplacnaczas.pl" style="color:#2563eb;text-decoration:none;">kontakt@zaplacnaczas.pl</a>
+                        </p>
+                      </td>
+                      <td class="stack-column-cell" style="padding:0 16px 16px 0;min-width:160px;">
+                        <p style="margin:0 0 6px;font-weight:600;">Social media</p>
+                        <p style="margin:0;color:#475569;font-size:13px;">
+                          <a href="https://facebook.com/zaplacnaczas" style="color:#2563eb;text-decoration:none;">Facebook</a>
+                        </p>
+                      </td>
+                      <td class="stack-column-cell" style="padding:0 0 16px;min-width:200px;">
+                        <p style="margin:0 0 6px;font-weight:600;">Przydatne linki</p>
+                        <p style="margin:0;color:#475569;font-size:13px;line-height:1.6;">
+                          <a href="https://itcwn.github.io/payontime/app.html" style="color:#2563eb;text-decoration:none;">Dashboard</a><br />
+                          <a href="https://itcwn.github.io/payontime/payments-new.html" style="color:#2563eb;text-decoration:none;">Nowa płatność</a><br />
+                          <a href="https://itcwn.github.io/payontime/report-bug.html" style="color:#2563eb;text-decoration:none;">Zgłoś błąd</a><br />
+                          <a href="https://itcwn.github.io/payontime/report-idea.html" style="color:#2563eb;text-decoration:none;">Zgłoś pomysł</a><br />
+                          <a href="https://itcwn.github.io/payontime/regulamin.html" style="color:#2563eb;text-decoration:none;">Regulamin</a><br />
+                          <a href="https://itcwn.github.io/payontime/polityka-prywatnosci.html" style="color:#2563eb;text-decoration:none;">Polityka prywatności</a>
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                  <p class="mobile-small" style="margin:16px 0 0;font-size:13px;color:#64748b;">
+                    © 2026 ZapłaćNaCzas. Wszelkie prawa zastrzeżone. Aplikacja stworzona przy wsparciu AI — testuj i korzystaj.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+  </html>
   `;
 }
 
