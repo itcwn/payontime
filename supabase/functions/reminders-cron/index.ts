@@ -217,39 +217,7 @@ function buildReminderEmailHtml(items: Array<{ name: string; due_date: string | 
               </tr>
               <tr>
                 <td class="mobile-padding" style="padding:20px 24px;border-top:1px solid #e2e8f0;background:#f8fafc;">
-                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                    <tr>
-                      <td class="stack-column-cell mobile-center" style="padding:0 0 16px;">
-                        <div style="display:inline-flex;align-items:center;justify-content:center;background:#f1f5f9;border:1px solid #cbd5f5;border-radius:12px;padding:5px;margin-bottom:8px;">
-                          <img src="https://itcwn.github.io/payontime/css/logo_m_black.jpg" alt="ZapłaćNaCzas" style="height:28px;width:auto;display:block;" />
-                        </div>
-                      </td>
-                      <td class="stack-column-cell" style="padding:0 16px 16px 0;min-width:160px;">
-                        <p style="margin:0 0 6px;font-weight:600;">Kontakt</p>
-                        <p style="margin:0;color:#475569;font-size:13px;">
-                          <a href="mailto:kontakt@zaplacnaczas.pl" style="color:#2563eb;text-decoration:none;">kontakt@zaplacnaczas.pl</a>
-                        </p>
-                      </td>
-                      <td class="stack-column-cell" style="padding:0 16px 16px 0;min-width:160px;">
-                        <p style="margin:0 0 6px;font-weight:600;">Social media</p>
-                        <p style="margin:0;color:#475569;font-size:13px;">
-                          <a href="https://facebook.com/zaplacnaczas" style="color:#2563eb;text-decoration:none;">Facebook</a>
-                        </p>
-                      </td>
-                      <td class="stack-column-cell" style="padding:0 0 16px;min-width:200px;">
-                        <p style="margin:0 0 6px;font-weight:600;">Przydatne linki</p>
-                        <p style="margin:0;color:#475569;font-size:13px;line-height:1.6;">
-                          <a href="https://itcwn.github.io/payontime/app.html" style="color:#2563eb;text-decoration:none;">Dashboard</a><br />
-                          <a href="https://itcwn.github.io/payontime/payments-new.html" style="color:#2563eb;text-decoration:none;">Nowa płatność</a><br />
-                          <a href="https://itcwn.github.io/payontime/report-bug.html" style="color:#2563eb;text-decoration:none;">Zgłoś błąd</a><br />
-                          <a href="https://itcwn.github.io/payontime/report-idea.html" style="color:#2563eb;text-decoration:none;">Zgłoś pomysł</a><br />
-                          <a href="https://itcwn.github.io/payontime/regulamin.html" style="color:#2563eb;text-decoration:none;">Regulamin</a><br />
-                          <a href="https://itcwn.github.io/payontime/polityka-prywatnosci.html" style="color:#2563eb;text-decoration:none;">Polityka prywatności</a>
-                        </p>
-                      </td>
-                    </tr>
-                  </table>
-                  <p class="mobile-small" style="margin:16px 0 0;font-size:13px;color:#64748b;">
+                  <p class="mobile-small" style="margin:0;font-size:13px;color:#64748b;">
                     © 2026 ZapłaćNaCzas. Wszelkie prawa zastrzeżone. Aplikacja stworzona przy wsparciu AI — testuj i korzystaj.
                   </p>
                 </td>
