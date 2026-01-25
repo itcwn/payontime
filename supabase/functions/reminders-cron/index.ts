@@ -127,9 +127,9 @@ function buildReminderEmailHtml(items: Array<{ name: string; due_date: string | 
         : `<span style="color:#9ca3af;">Brak linku</span>`;
       return `
         <tr>
-          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;word-break:break-word;">${name}</td>
-          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;word-break:break-word;">${dueDate}</td>
-          <td style="padding:12px 8px;border-bottom:1px solid #e2e8f0;word-break:break-word;">${provider}</td>
+          <td style="padding:11px 8px;border-bottom:1px solid #e2e8f0;word-break:break-word;">${name}</td>
+          <td style="padding:11px 8px;border-bottom:1px solid #e2e8f0;word-break:break-word;">${dueDate}</td>
+          <td style="padding:11px 8px;border-bottom:1px solid #e2e8f0;word-break:break-word;">${provider}</td>
         </tr>
       `;
     })
@@ -177,7 +177,7 @@ function buildReminderEmailHtml(items: Array<{ name: string; due_date: string | 
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" class="container" style="max-width:680px;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
               <tr>
                 <td class="mobile-padding" style="padding:24px;border-bottom:1px solid #e2e8f0;background:#ffffff;">
-                  <div style="display:inline-flex;align-items:center;justify-content:center;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:6px;">
+                  <div style="display:inline-flex;align-items:center;justify-content:center;background:#f1f5f9;border:1px solid #cbd5f5;border-radius:14px;padding:6px;">
                     <img src="https://itcwn.github.io/payontime/css/logo_m.png" alt="ZapłaćNaCzas" style="height:36px;width:auto;display:block;" />
                   </div>
                 </td>
@@ -195,16 +195,16 @@ function buildReminderEmailHtml(items: Array<{ name: string; due_date: string | 
               </tr>
               <tr>
                 <td class="mobile-padding" style="padding:0 24px 24px;">
-                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;font-size:14px;table-layout:fixed;">
+                  <table role="presentation" width="90%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;font-size:13px;table-layout:fixed;margin:0 auto;">
                     <thead>
                       <tr>
-                        <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;word-break:break-word;">
+                        <th style="padding:9px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:10px;color:#9ca3af;word-break:break-word;">
                           Nazwa
                         </th>
-                        <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;word-break:break-word;">
+                        <th style="padding:9px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:10px;color:#9ca3af;word-break:break-word;">
                           Termin
                         </th>
-                        <th style="padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:11px;color:#9ca3af;word-break:break-word;">
+                        <th style="padding:9px 8px;border-bottom:1px solid #e2e8f0;text-align:left;text-transform:uppercase;letter-spacing:0.08em;font-size:10px;color:#9ca3af;word-break:break-word;">
                           Dostawca
                         </th>
                       </tr>
