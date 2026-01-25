@@ -80,64 +80,11 @@ const headerTemplates = {
 const footerTemplates = {
   app: `
     <footer class="site-footer">
-      <div class="container footer-content">
-        <div class="footer-brand">
-          <img src="./css/logo_m_black.jpg" alt="ZapłaćNaCzas" />
-        </div>
-        <div class="footer-section">
-          <h3>Kontakt</h3>
-          <p><a href="mailto:kontakt@zaplacnaczas.pl">kontakt@zaplacnaczas.pl</a></p>
-        </div>
-        <div class="footer-section">
-          <h3>Social media</h3>
-          <ul class="footer-links-list">
-            <li><a href="https://facebook.com/zaplacnaczas">Facebook</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>Przydatne linki</h3>
-          <ul class="footer-links-list">
-            <li><a href="./app.html">Dashboard</a></li>
-            <li><a href="./payments-new.html">Nowa płatność</a></li>
-            <li><a href="./report-bug.html">Zgłoś błąd</a></li>
-            <li><a href="./report-idea.html">Zgłoś pomysł</a></li>
-            <li><a href="./regulamin.html">Regulamin</a></li>
-            <li><a href="./polityka-prywatnosci.html">Polityka prywatności</a></li>
-          </ul>
-        </div>
-      </div>
       <div class="footer-bottom">© 2026 ZapłaćNaCzas. Wszelkie prawa zastrzeżone. Aplikacja stworzona przy wsparciu AI — testuj i korzystaj.</div>
     </footer>
   `,
   public: `
     <footer class="site-footer">
-      <div class="container footer-content">
-        <div class="footer-brand">
-          <img src="./css/logo_m_black.jpg" alt="ZapłaćNaCzas" />
-        </div>
-        <div class="footer-section">
-          <h3>Kontakt</h3>
-          <p><a href="mailto:kontakt@zaplacnaczas.pl">kontakt@zaplacnaczas.pl</a></p>
-        </div>
-        <div class="footer-section">
-          <h3>Social media</h3>
-          <ul class="footer-links-list">
-            <li><a href="https://facebook.com/zaplacnaczas">Facebook</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>Przydatne linki</h3>
-          <ul class="footer-links-list">
-            <li><a href="./index.html">Strona główna</a></li>
-            <li><a href="./login.html">Logowanie</a></li>
-            <li><a href="./signup.html">Rejestracja</a></li>
-            <li><a href="./report-bug.html">Zgłoś błąd</a></li>
-            <li><a href="./report-idea.html">Zgłoś pomysł</a></li>
-            <li><a href="./regulamin.html">Regulamin</a></li>
-            <li><a href="./polityka-prywatnosci.html">Polityka prywatności</a></li>
-          </ul>
-        </div>
-      </div>
       <div class="footer-bottom">© 2026 ZapłaćNaCzas. Wszelkie prawa zastrzeżone. Aplikacja stworzona przy wsparciu AI — testuj i korzystaj.</div>
     </footer>
   `,
