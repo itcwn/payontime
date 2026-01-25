@@ -176,7 +176,7 @@ function buildReminderEmailHtml(items: Array<{ name: string; due_date: string | 
           <td align="center" style="padding:24px 12px;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" class="container" style="max-width:680px;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
               <tr>
-                <td class="mobile-padding" style="padding:24px;border-bottom:1px solid #e2e8f0;">
+                <td class="mobile-padding" style="padding:24px;border-bottom:1px solid #e2e8f0;background:#ffffff;">
                   <div style="display:inline-flex;align-items:center;justify-content:center;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:6px;">
                     <img src="https://itcwn.github.io/payontime/css/logo_m.png" alt="ZapłaćNaCzas" style="height:36px;width:auto;display:block;" />
                   </div>
