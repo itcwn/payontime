@@ -560,6 +560,31 @@ main {
   gap: 16px;
 }
 
+.guide-steps {
+  gap: 24px;
+}
+
+.guide-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.guide-step img {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+.guide-step h2 {
+  margin: 0;
+}
+
+.guide-step p {
+  margin: 0;
+}
+
 .checkbox-field {
   display: flex;
   gap: 10px;
@@ -1144,6 +1169,22 @@ input[type="radio"] {
   flex-direction: column;
   gap: 4px;
   font-size: 0.9rem;
+}
+
+@media (min-width: 900px) {
+  .guide-step {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .guide-step--reverse img {
+    order: 1;
+  }
+
+  .guide-step--reverse .guide-step-content {
+    order: 2;
+  }
 }
 
 @media (min-width: 768px) {

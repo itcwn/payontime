@@ -14,6 +14,7 @@ const headerTemplates = {
           <a href="./app.html">Twoje płatności</a>
           <a href="./payments-new.html">Nowa płatność</a>
           <a href="./settings.html">Ustawienia</a>
+          <a href="./instrukcja.html">Instrukcja</a>
         </nav>
         <div class="header-user">
           <details class="user-menu">
@@ -52,6 +53,7 @@ const headerTemplates = {
           <a href="./app.html">Dashboard</a>
           <a href="./payments-new.html">Nowa płatność</a>
           <a href="./settings.html">Ustawienia</a>
+          <a href="./instrukcja.html">Instrukcja</a>
         </nav>
       </div>
     </header>
@@ -71,6 +73,7 @@ const headerTemplates = {
           <a href="./index.html">Strona główna</a>
           <a href="./login.html">Logowanie</a>
           <a href="./signup.html">Rejestracja</a>
+          <a href="./instrukcja.html">Instrukcja</a>
         </nav>
       </div>
     </header>
@@ -101,6 +104,7 @@ const footerTemplates = {
             <li><a href="./payments-new.html">Nowa płatność</a></li>
             <li><a href="./report-bug.html">Zgłoś błąd</a></li>
             <li><a href="./report-idea.html">Zgłoś pomysł</a></li>
+            <li><a href="./instrukcja.html">Instrukcja</a></li>
             <li><a href="./regulamin.html">Regulamin</a></li>
             <li><a href="./polityka-prywatnosci.html">Polityka prywatności</a></li>
           </ul>
@@ -133,6 +137,7 @@ const footerTemplates = {
             <li><a href="./signup.html">Rejestracja</a></li>
             <li><a href="./report-bug.html">Zgłoś błąd</a></li>
             <li><a href="./report-idea.html">Zgłoś pomysł</a></li>
+            <li><a href="./instrukcja.html">Instrukcja</a></li>
             <li><a href="./regulamin.html">Regulamin</a></li>
             <li><a href="./polityka-prywatnosci.html">Polityka prywatności</a></li>
           </ul>
